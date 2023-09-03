@@ -1,8 +1,24 @@
 <template>
   <el-table :data="currentPageData" style="width: 100%">
-    <el-table-column prop="date" label="Date" width="180" />
-    <el-table-column prop="title" label="Title" width="180" />
-    <el-table-column prop="digest" label="Digest" width="500" />
+    <el-table-column label="Date" prop="date" width="180"/>
+    <el-table-column label="Title" prop="title" width="180"/>
+    <el-table-column label="Digest" prop="digest" width="450"/>
+    <el-table-column align="right">
+      <template #header>
+        <el-input v-model="search" size="small" placeholder="Type to search" />
+      </template>
+      <template #default="scope">
+        <el-button size="small" @click=""
+          >Edit</el-button
+        >
+        <el-button
+          size="small"
+          type="danger"
+          @click=""
+          >Delete</el-button
+        >
+      </template>
+    </el-table-column>
   </el-table>
 
   <!-- 分页器 -->
@@ -37,7 +53,15 @@ let paginationProps = {
 // 定义一个分页组件的事件处理函数
 let data = ref([])
 let currentPageData = ref([])
-
+//筛选
+const search = ref('')
+const filterTableData = computed(() =>
+currentPageData.filter(
+    (data) =>
+      !search.value ||
+      data.name.toLowerCase().includes(search.value.toLowerCase())
+  )
+)
 
 const handlePagination = function (val:any) {
   // 根据当前页码和每页显示的数据条数，计算出当前页的数据范围
