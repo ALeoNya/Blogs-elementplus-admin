@@ -24,6 +24,16 @@ let routes1 = [
     path: '/login',
     component: () => import('../views/login.vue')
   },
+  {
+    name: '401',
+    path: '/401',
+    component: () => import('../views/401.vue')
+  },
+  {
+    name: '403',
+    path: '/403',
+    component: () => import('../views/403.vue')
+  },
 ]
 
 const routes = menuList.concat(routes1)
