@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="currentPageData" style="width: 100%">
+  <el-table :data="filterTableData" style="width: 100%">
     <el-table-column label="Date" prop="date" width="180"/>
     <el-table-column label="Title" prop="title" width="180"/>
     <el-table-column label="Digest" prop="digest" width="450"/>
@@ -8,13 +8,13 @@
         <el-input v-model="search" size="small" placeholder="Type to search" />
       </template>
       <template #default="scope">
-        <el-button size="small" @click=""
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
           >Edit</el-button
         >
         <el-button
           size="small"
           type="danger"
-          @click=""
+          @click="handleDelete(scope.$index, scope.row)"
           >Delete</el-button
         >
       </template>
@@ -39,7 +39,7 @@
 
 <script lang="ts" setup>
 import {getAllTitle} from '@/apis/article'
-import { ref, reactive } from "vue"
+import { ref, reactive, computed } from "vue"
 
 
 let paginationProps = {
@@ -51,25 +51,43 @@ let paginationProps = {
   total: 0,
 };
 // 定义一个分页组件的事件处理函数
-let data = ref([])
-let currentPageData = ref([])
-//筛选
+let data = ref([
+  {
+    title: '',
+    digest: '',
+    date: '',
+  }
+])
+let currentPageData = ref([
+  {
+    title: '',
+    digest: '',
+    date: '',
+  }
+])
 const search = ref('')
-const filterTableData = computed(() =>
-currentPageData.filter(
-    (data) =>
-      !search.value ||
-      data.name.toLowerCase().includes(search.value.toLowerCase())
-  )
-)
-
+let filterTableData:any
+let filterTableData2= ref()
 const handlePagination = function (val:any) {
   // 根据当前页码和每页显示的数据条数，计算出当前页的数据范围
-  let start = (val - 1) * paginationProps.pageSize;
-  let end = val * paginationProps.pageSize;
+  let start = (val - 1) * paginationProps.pageSize
+  let end = val * paginationProps.pageSize
   // 根据数据范围，从数据源中截取出当前页的数据
-  currentPageData.value = data.value.slice(start, end);
-  console.log(currentPageData)
+  currentPageData.value = data.value.slice(start, end)
+  let currentPageDataJSON = JSON.parse(JSON.stringify(data.value.slice(start, end)) ) 
+  // console.log(currentPageDataJSON)
+
+  //筛选
+  filterTableData = computed(() =>
+  currentPageData.value.filter(
+      (data:any) =>
+        !search.value ||
+        data.title.toLowerCase().includes(search.value.toLowerCase())
+    )
+  )
+  // filterTableData2.value = filterTableData.value
+
+  console.log(filterTableData)
 };
 
 const getlistData = () => {
@@ -77,13 +95,22 @@ const getlistData = () => {
       data.value = res.data
       // console.log(data)
       paginationProps.total = data.value.length
-      console.log(paginationProps.total)
+      // console.log(paginationProps.total)
 
       // 调用分页组件的事件处理函数，显示第一页的数据
       handlePagination(1);
     })
 }
 getlistData()
+
+//编辑
+const handleEdit = (index: number, row: title) => {
+  console.log(index, row)
+}
+//删除
+const handleDelete = (index: number, row: User) => {
+  console.log(index, row)
+}
 </script>
 <style scoped>
 .example-pagination-block + .example-pagination-block {
