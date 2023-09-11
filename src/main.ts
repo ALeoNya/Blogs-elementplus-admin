@@ -10,8 +10,14 @@ import router from './router'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
-/* axios */
-// import axios from 'axios'
+import VMdEditor from '@kangc/v-md-editor';
+import '@kangc/v-md-editor/lib/style/base-editor.css';
+import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
+import '@kangc/v-md-editor/lib/theme/style/github.css';
+import hljs from 'highlight.js';  // highlightjs
+VMdEditor.use(githubTheme, {
+  Hljs: hljs,
+});
 
 
 const app = createApp(App)
@@ -19,6 +25,6 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
     .use(ElementPlus)
-    // .use(axios)
+    .use(VMdEditor)
 
 app.mount('#app')

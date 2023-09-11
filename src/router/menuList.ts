@@ -20,7 +20,7 @@ const menuList = [
                 name: '发布文章',
                 meta:{ icon: '',title: 'Create Article'},  
                 path: '/create',
-                component: () => import('../views/test/test2.vue')
+                component: () => import('../views/article/createArticle.vue')
             },
             {   
                 name: '分类管理',

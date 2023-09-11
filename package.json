@@ -11,8 +11,11 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
+    "@kangc/v-md-editor": "^2.3.17",
     "axios": "^1.4.0",
     "element-plus": "^2.3.9",
+    "mavon-editor": "^2.10.4",
+    "md-editor-v3": "^4.6.1",
     "pinia": "^2.1.4",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4"

@@ -1,13 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import  menuList  from '@/router/menuList'
-import { ref } from 'vue'
-
 
 let routes1 = [
   {
     name: 'layout',
-    path: '/layout',
-    component: () => import('../layout/index.vue')
+    path: '/',
+    component: () => import('../layout/index.vue'),
+    children:  [
+      {
+        name: 'edit',
+        path: '/edit',
+        component: () => import('../views/article/editArticle.vue')
+      },
+    ]
   },
   {
     name: 'test',

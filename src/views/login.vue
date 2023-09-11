@@ -34,10 +34,10 @@
       if(res.data.code==100) {
         if(res.data.auth=='admin') {  //管理员
           localStorage.setItem('status','admin')
-          router.push('/layout')
+          router.push('/')
         } else if(res.data.auth=='user') {  //游客
           localStorage.setItem('status','user')
-          router.push('/layout')
+          router.push('/')
         }
       }
     }).catch(err=>{

@@ -8,9 +8,7 @@
         <el-input v-model="search" size="small" placeholder="Type to search" />
       </template>
       <template #default="scope">
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
-          >Edit</el-button
-        >
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
         <el-button
           size="small"
           type="danger"
@@ -39,7 +37,9 @@
 
 <script lang="ts" setup>
 import {getAllTitle} from '@/apis/article'
-import { ref, reactive, computed } from "vue"
+// import router from '@/router';
+import { useRoute, useRouter } from "vue-router"
+import { ref, reactive, computed ,} from "vue"
 
 
 let paginationProps = {
@@ -103,9 +103,17 @@ const getlistData = () => {
 }
 getlistData()
 
+const router = useRouter()
 //编辑
 const handleEdit = (index: number, row: title) => {
-  console.log(index, row)
+  console.log(row.tid)
+  if(localStorage.getItem('status')=='admin') {
+    router.push({
+      path:'/edit',
+      query: row  //query接受对象
+    })
+
+  } else { console.log('权限不足，请联系管理员') }
 }
 //删除
 const handleDelete = (index: number, row: User) => {
@@ -122,7 +130,7 @@ const handleDelete = (index: number, row: User) => {
 .pagination {
   display: flex;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
   margin-top: 20px;
 }
 </style>
