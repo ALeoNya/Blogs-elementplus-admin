@@ -36,7 +36,7 @@
 
 
 <script lang="ts" setup>
-import {getAllTitle} from '@/apis/article'
+import { getAllTitle ,deleteArticle} from '@/apis/article'
 // import router from '@/router';
 import { useRoute, useRouter } from "vue-router"
 import { ref, reactive, computed ,} from "vue"
@@ -66,8 +66,9 @@ let currentPageData = ref([
   }
 ])
 const search = ref('')
-let filterTableData:any
-let filterTableData2= ref()
+// let filterTableData:any
+let filterTableData= ref()
+// let filterTableData2= ref()
 const handlePagination = function (val:any) {
   // 根据当前页码和每页显示的数据条数，计算出当前页的数据范围
   let start = (val - 1) * paginationProps.pageSize
@@ -117,7 +118,10 @@ const handleEdit = (index: number, row: title) => {
 }
 //删除
 const handleDelete = (index: number, row: User) => {
-  console.log(index, row)
+  const cid = row.tid
+  deleteArticle(cid,row.tid).then(res=>{
+    currentPageData.value.splice(index, 1);
+  })
 }
 </script>
 <style scoped>

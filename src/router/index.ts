@@ -12,6 +12,21 @@ let routes1 = [
         path: '/edit',
         component: () => import('../views/article/editArticle.vue')
       },
+      {
+        name: '400',
+        path: '/400',
+        component: () => import('../views/error/400.vue')
+      },
+      {
+        name: '401',
+        path: '/401',
+        component: () => import('../views/error/401.vue')
+      },
+      {
+        name: '403',
+        path: '/403',
+        component: () => import('../views/error/403.vue')
+      },
     ]
   },
   {
@@ -29,16 +44,16 @@ let routes1 = [
     path: '/login',
     component: () => import('../views/login.vue')
   },
-  {
-    name: '401',
-    path: '/401',
-    component: () => import('../views/401.vue')
-  },
-  {
-    name: '403',
-    path: '/403',
-    component: () => import('../views/403.vue')
-  },
+  // {
+  //   name: '401',
+  //   path: '/401',
+  //   component: () => import('../views/401.vue')
+  // },
+  // {
+  //   name: '403',
+  //   path: '/403',
+  //   component: () => import('../views/403.vue')
+  // },
 ]
 
 const routes = menuList.concat(routes1)

@@ -2,25 +2,50 @@
 <script lang="ts" setup>
 import { onMounted ,ref , onBeforeMount} from 'vue';
 import { useRoute } from "vue-router"
+import { getContent,save } from '@/apis/article'
+import router from '@/router';
 const route = useRoute()
 
+const cid = ref(route.query.tid)
+const tid = ref(route.query.tid)
 const title = ref(route.query.title)
 const digest = ref(route.query.digest)
 const date = ref(route.query.date)
+const content = ref()
 
+const getData = () => {    
+    getContent(Number(cid.value)).then(res=>{
+        content.value = res.data.content
+        // console.log(content)
+    })
+}
 
 onBeforeMount(()=>{
-    console.log(route.query)
-    article.content = JSON.stringify(route.query.digest) 
-
+    getData() 
 })
 
 let article = {
     content: '',
 }
+
+// 提交更新
 const handler = () => {
-    // console.log(route.query)
-    // article.content = JSON.stringify(route.query.digest) 
+    save(
+        Number(cid.value),
+        content.value,
+        Number(tid.value),
+        title.value,
+        digest.value,
+        date.value
+        ).then(res=>{
+        if(res.data) {
+            console.log('successfully to update')
+            router.push('/articleList')
+        } else {
+            console.log('update faile')
+        }
+
+    })
 }
 </script>
 
@@ -50,7 +75,7 @@ const handler = () => {
     <div style="margin: 20px 0" />
 
     <v-md-editor
-        v-model="article.content"
+        v-model="content"
         :disabled-menus="[]"
         height="400px">
     </v-md-editor>
