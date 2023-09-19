@@ -10,7 +10,7 @@ export const getAllTitle  = function() {
 
 export const getContent  = function(cid:number) {
     return request({
-        url: '/getContentByid',
+        url: '/article/getContentByid',
         method: 'post',
         data: {
             cid,
@@ -21,7 +21,7 @@ export const getContent  = function(cid:number) {
 
 export const save = function(cid:number,content:string,tid:number,title:string,digest:string,date:string) {
     return request({
-        url: '/updateTitleContent',
+        url: '/article/updateArticle',
         method: 'post',
         data: {
             cid,
@@ -36,11 +36,24 @@ export const save = function(cid:number,content:string,tid:number,title:string,d
 
 export const deleteArticle = function(tid:number,cid:number) {
     return request({
-        url: 'deleteArticle',
+        url: '/article/deleteArticle',
         method: 'post',
         data: {
             tid,
             cid
+        }
+    })
+}
+
+export const insert = function(content:string,title:string,digest:string,date:string) {
+    return request({
+        url: '/article/InsertArticle',
+        method: 'post',
+        data: {
+            title,
+            digest,
+            date,
+            content,         
         }
     })
 }

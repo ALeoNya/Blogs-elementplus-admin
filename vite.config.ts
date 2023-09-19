@@ -3,10 +3,15 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
+import prismjs from 'vite-plugin-prismjs';  //md语言包高亮
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
+    prismjs({
+      languages: 'all',
+    }),
   ],
   resolve: {
     alias: {

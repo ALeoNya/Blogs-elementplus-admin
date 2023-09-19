@@ -1,111 +1,138 @@
-<!-- v-md-editor -->
-<script lang="ts" setup>
-import { onMounted ,ref , onBeforeMount} from 'vue';
-import { useRoute } from "vue-router"
-import { getContent,save } from '@/apis/article'
-import router from '@/router';
-const route = useRoute()
-
-const cid = ref(route.query.tid)
-const tid = ref(route.query.tid)
-const title = ref(route.query.title)
-const digest = ref(route.query.digest)
-const date = ref(route.query.date)
-const content = ref()
-
-const getData = () => {    
-    getContent(Number(cid.value)).then(res=>{
-        content.value = res.data.content
-        // console.log(content)
-    })
-}
-
-onBeforeMount(()=>{
-    getData() 
-})
-
-let article = {
-    content: '',
-}
-
-// 提交更新
-const handler = () => {
-    save(
-        Number(cid.value),
-        content.value,
-        Number(tid.value),
-        title.value,
-        digest.value,
-        date.value
-        ).then(res=>{
-        if(res.data) {
-            console.log('successfully to update')
-            router.push('/articleList')
-        } else {
-            console.log('update faile')
-        }
-
-    })
-}
-</script>
-
 <template>
-    <p>Enter new title :</p>
-    <el-input
-        v-model="title"
-        autosize
-        type="textarea"
-        placeholder="Please input"
-    />
-    <div style="margin: 20px 0" />
-    <p>Enter new digest :</p>
-    <el-input
-        v-model="digest"
-        :autosize="{ minRows: 2, maxRows: 4 }"
-        type="textarea"
-        placeholder="Please input"
-    />
-    <div style="margin: 20px 0" />
-    <p>Enter the date :</p>
-    <el-input
-        v-model="date"
-        class="w-50 m-2"
-        placeholder="Pick a date"
-      />
-    <div style="margin: 20px 0" />
+    <el-form
+      ref="ruleFormRef"
+      :model="article"
+      status-icon
+      :rules="rules"
+      label-width="120px"
+      class="demo-ruleForm"
+    >
+    <el-form-item label="title" prop="title">
+    <el-input v-model="article.title" autocomplete="off" />
+    </el-form-item>
 
-    <v-md-editor
-        v-model="content"
-        :disabled-menus="[]"
-        height="400px">
-    </v-md-editor>
-    <div>
-        <div class="btn-place">
-            <button class="btn" @click="handler()">保存修改</button>
-        </div>
-    </div>
+    <el-form-item label="date" prop="date">
+        <el-date-picker
+            v-model="article.date"
+            label="Pick a date"
+            placeholder="Pick a date"
+            style="width: 100%"
+        />
+    </el-form-item>
 
-</template>
-  
-<style>
-    .btn-place {
-        height: 30px;
-        width: 100%;
+    <el-form-item label="digest" prop="digest">
+        <el-input v-model="article.digest" type="textarea" />
+    </el-form-item>
 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-    }
-    .btn {
-        height: 100%;
-        width: 100px;
-        background-color: white;
-    }
-    .btn:hover {
-        background-color: rgb(225, 125, 255);
-    }
-</style>
+    <el-form-item prop="digest">
+        <v-md-editor
+            v-model="content"
+            :disabled-menus="[]"
+            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save emoji"
+            height="400px">
+        </v-md-editor>
+    </el-form-item>
+    
+    </el-form>
+    <el-button type="primary" @click="handler(ruleFormRef)">Submit</el-button>
+
+  </template>
   
-  
+<script lang="ts" setup>
+    import { reactive, ref,onBeforeMount, } from 'vue'
+    import type { FormInstance, FormRules } from 'element-plus'
+    import { useRoute } from "vue-router"
+    import { getContent,save } from '@/apis/article'
+    import router from '@/router';
+    // import { ar } from 'element-plus/lib/locale/index.js';
+    import Vue from 'vue';
+
+    const route = useRoute()
+    let article = ref()
+    article.value = route.query
+
+    const cid = ref(route.query.tid)
+    const tid = ref(route.query.tid)
+    const title = ref(route.query.title)
+    const digest = ref(route.query.digest)
+    const date = ref(route.query.date)
+    const content = ref()
+    const getData = () => {    
+        getContent(Number(cid.value)).then(res=>{
+            content.value = res.data.content
+            console.log(content)
+        })
+    }
+
+    onBeforeMount(()=>{
+        getData() 
+    })
+
+
+    const ruleFormRef = ref<FormInstance>()
+
+    const checkTitle = (rule: any, value: any, callback: any) => {
+    if (value === '') {
+        return callback(new Error('Please input the title'))
+    } else {
+        callback()
+    }
+    }
+
+    const checkDigest = (rule: any, value: any, callback: any) => {
+    if (value === '') {
+        callback(new Error('Please input the digese'))
+    } else {
+        callback()
+    }
+    }
+
+    const ruleForm = reactive({
+        title: '',
+        date: '',
+        digest: '',
+    })
+
+    const rules = reactive<FormRules<typeof ruleForm>>({
+    title: [{ validator: checkTitle, trigger: 'blur' }],
+    date: [{type: 'date',required: true,message: 'Please pick a date',trigger: 'change',}],
+    digest: [{ validator: checkDigest, trigger: 'blur' }],
+    })
+
+    const handler = (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    formEl.validate((valid) => {
+        if (valid) {
+            save(
+            Number(cid.value),
+            content.value,
+            Number(tid.value),
+            // title.value,
+            article.value.title,
+            article.value.digest,
+            article.value.date,
+
+            ).then(res=>{
+                if(res.data) {
+                    console.log('successfully to update')
+                    router.push('/articleList')
+                } else {
+                    console.log('update faile')
+                }
+            })
+            console.log('submit!')
+            // router.push('/articleList')
+        } 
+        else {
+            console.log('error submit!')
+            return false
+        }
+    })
+    }
+
+    const resetForm = (formEl: FormInstance | undefined) => {
+    if (!formEl) return
+    formEl.resetFields()
+    }
+</script>
   

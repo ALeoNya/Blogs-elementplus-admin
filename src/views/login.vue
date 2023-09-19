@@ -30,7 +30,7 @@
 
   const loginHandle = () => {
     login(username.value, password.value).then(res=>{
-      console.log(res.data.msg)
+      // console.log(res.data.msg)
       if(res.data.code==100) {
         if(res.data.auth=='admin') {  //管理员
           localStorage.setItem('status','admin')

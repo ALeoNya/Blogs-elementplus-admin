@@ -7,6 +7,11 @@ let routes1 = [
     path: '/',
     component: () => import('../layout/index.vue'),
     children:  [
+      // {
+      //   name: 'edit',
+      //   path: '/edit',
+      //   component: () => import('../views/article/editArticle.vue')
+      // },
       {
         name: 'edit',
         path: '/edit',
