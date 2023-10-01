@@ -57,3 +57,14 @@ export const insert = function(content:string,title:string,digest:string,date:st
         }
     })
 }
+
+export const uploadFile = function(formData:FormData) {
+    return request({
+        url: '/minio/uploadFile',
+        method: 'post',
+        headers: {
+            "Content-Type": "multipart/form-data" 
+        },
+        data: formData,
+    })
+}

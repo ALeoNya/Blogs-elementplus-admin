@@ -45,6 +45,11 @@ let routes1 = [
     component: () => import('../views/test/test2.vue')
   },
   {
+    name: 'test3',
+    path: '/test3',
+    component: () => import('../components/md_editor.vue')
+  },
+  {
     name: 'login',
     path: '/login',
     component: () => import('../views/login.vue')

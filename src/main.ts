@@ -21,6 +21,9 @@ import Prism from 'prismjs';
 import createEmojiPlugin from '@kangc/v-md-editor/lib/plugins/emoji/index';
 import '@kangc/v-md-editor/lib/plugins/emoji/emoji.css';
 
+/* 居中 */
+import createAlignPlugin from '@kangc/v-md-editor/lib/plugins/align';
+
 // // codemirror 编辑器的相关资源
 // import Codemirror from 'codemirror';
 // // mode
@@ -48,6 +51,7 @@ import '@kangc/v-md-editor/lib/plugins/emoji/emoji.css';
 VueMarkdownEditor.use(vuepressTheme, {
   Prism,
 })
+.use(createAlignPlugin())
 .use(createEmojiPlugin());
 
 const app = createApp(App)

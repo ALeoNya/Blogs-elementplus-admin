@@ -28,8 +28,10 @@
         <v-md-editor
             v-model="content"
             :disabled-menus="[]"
-            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image code | save emoji"
-            height="400px">
+            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image center code | save emoji"
+            @upload-image="handleUploadImage"
+            :toolbar="toolbar"
+            height=250%>
         </v-md-editor>
     </el-form-item>
     
@@ -42,7 +44,7 @@
     import { reactive, ref,onBeforeMount, } from 'vue'
     import type { FormInstance, FormRules } from 'element-plus'
     import { useRoute } from "vue-router"
-    import { getContent,save } from '@/apis/article'
+    import { getContent,save,uploadFile } from '@/apis/article'
     import router from '@/router';
     // import { ar } from 'element-plus/lib/locale/index.js';
     import Vue from 'vue';
@@ -98,6 +100,46 @@
     date: [{type: 'date',required: true,message: 'Please pick a date',trigger: 'change',}],
     digest: [{ validator: checkDigest, trigger: 'blur' }],
     })
+
+    const toolbar = {
+        center: {
+        title: '居中',
+        icon: 'v-md-icon-tip',
+        action(editor: any) {
+          editor.insert(function (selected: any) {
+            const prefix = '::: align-center';
+            const suffix = ':::';
+            const placeholder = '请输入文本';
+            const content = selected || placeholder;
+
+            return {
+              text: `${prefix}${content}${suffix}`,
+              selected: content,
+            };
+          });
+        },
+      },
+    };
+
+    //上传本地图片
+    const handleUploadImage = (event:any, insertImage:any, files:any) => {
+        const formData = new FormData();
+        formData.append('file', files[0]);
+        // console.log(files);
+        uploadFile(formData).then(res=>{
+            // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
+            insertImage({
+                url: res.data.url,
+                desc: res.data.desc,
+
+                width: 'auto',
+                margin: "100px",
+                height: 'auto',
+            })
+        }).catch(error=>{
+            console.log("上传文件失败,请重试")
+        })
+    }
 
     const handler = (formEl: FormInstance | undefined) => {
     if (!formEl) return

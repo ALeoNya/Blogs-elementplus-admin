@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { ElMessage } from 'element-plus';
 //login-request
+// const baseURL = 'http://43.142.32.223:3060'
 const baseURL = 'http://localhost:8080'
 
 const request = axios.create({

@@ -1,32 +1,62 @@
-<!-- v-md-editor -->
-<script lang="ts" setup>
-const article = {
-    content: '',
-}
-const handler = () => {
-    console.log(article.content)
-}
-</script>
-
-<template>
-    <v-md-editor
-        v-model="article.content"
-        :disabled-menus="[]"
-        height="400px">
-    </v-md-editor>
-    <button class="btn" @click="handler()"></button>
+<!-- <template>
+  <v-md-editor left-toolbar="undo redo | customToolbar" :toolbar="toolbar" />
 </template>
-  
-<style>
-    .btn {
-        height: 20px;
-        width: 20px;
-        background-color: white;
-    }
-    .btn:hover {
-        background-color: rgb(225, 125, 255);
-    }
-</style>
-  
-  
-  
+
+<script lang="ts" setup>
+
+    const toolbar = {
+      customToolbar: {
+        icon: 'toolbar图标类名',
+        title: 'hover时显示的标题',
+        action(editor:any) {
+          editor.insert(function (selected:any) {
+            const prefix = '(((';
+            const suffix = ')))';
+            const placeholder = '请输入文本';
+            const content = selected || placeholder;
+
+            return {
+              text: `${prefix}${content}${suffix}`,
+              selected: content,
+            };
+          });
+        },
+      },
+    };
+</script> -->
+<template>
+  <v-md-editor left-toolbar="undo redo | customToolbar1 customToolbar2 customToolbar3" :toolbar="toolbar" height="500px" v-model="text"/>
+</template>
+
+<script lang="ts" setup>
+import { defineComponent } from 'vue';
+
+// export default defineComponent({
+  // setup() {
+    const toolbar = {
+      customToolbar1: {
+        title: '基础工具栏',
+        icon: 'v-md-icon-tip',
+        action(editor: any) {
+          editor.insert(function (selected: any) {
+            const prefix = '(((';
+            const suffix = ')))';
+            const placeholder = '请输入文本';
+            const content = selected || placeholder;
+
+            return {
+              text: `${prefix}${content}${suffix}`,
+              selected: content,
+            };
+          });
+        },
+      },
+    };
+    // const text = '';
+    // return {
+    //   toolbar,
+    //   text
+    // };
+  // },
+// });
+</script>
