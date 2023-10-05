@@ -15,7 +15,7 @@ let routes1 = [
       {
         name: 'edit',
         path: '/edit',
-        component: () => import('../views/article/editArticle.vue')
+        component: () => import('../views/article/editArticle2.vue')
       },
       {
         name: '400',

@@ -20,7 +20,7 @@ const menuList = [
                 name: '发布文章',
                 meta:{ icon: '',title: 'Create Article'},  
                 path: '/create',
-                component: () => import('../views/article/createArticle.vue')
+                component: () => import('../views/article/createArticle2.vue')
             },
             {   
                 name: '分类管理',
@@ -72,20 +72,6 @@ const menuList = [
             },
         ]
     },
-    // {
-    //     name: '好友管理',
-    //     meta:{ icon: '', status: 'user', title: 'Friend Manage'},  
-    //     path: '/friend1',
-    //     component: layout,
-    //     children:  [
-    //         {   
-    //             name: '好友列表',
-    //             meta:{ icon: '',title: 'Friend List'},  
-    //             path: '/friendList1',
-    //             component: () => import('../views/test/test.vue')
-    //         },
-    //     ]
-    // },
 ]
 
 export default menuList;

@@ -11,11 +11,11 @@
     "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
-    "@kangc/v-md-editor": "^2.3.17",
+    "@kangc/v-md-editor": "^2.1.7",
     "axios": "^1.4.0",
     "element-plus": "^2.3.9",
     "markdown-it-emoji": "^2.0.2",
-    "mavon-editor": "^2.10.4",
+    "mavon-editor": "^3.0.1",
     "md-editor-v3": "^4.6.1",
     "pinia": "^2.1.4",
     "vite-plugin-prismjs": "^0.0.8",

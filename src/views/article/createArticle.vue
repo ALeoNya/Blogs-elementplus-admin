@@ -31,7 +31,8 @@
             left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image center code emoji align | save "
             :toolbar="toolbar"
             @upload-image="handleUploadImage"
-            height=250%>
+            :delete-image="deleteImage"
+            height=600px>
         </v-md-editor>
     </el-form-item>
 
@@ -133,6 +134,11 @@ import axios from 'axios';
         }).catch(error=>{
             console.log("上传文件失败,请重试")
         })
+    }
+
+    // 删除图片
+    const deleteImage = (event:any, insertImage:any, files:any) => {
+        console.log("delete image successful!!!")
     }
 
     const handler = (formEl: FormInstance | undefined) => {
