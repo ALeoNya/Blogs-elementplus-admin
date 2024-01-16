@@ -13,6 +13,7 @@
               <component :is="item.meta.icon" />
               <Location></Location>
             </el-icon> -->
+            <!-- <icon class="item.meta.icon"></icon> -->
             <span>{{ item.meta.title }}</span>
           </template>
 

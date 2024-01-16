@@ -1,14 +1,17 @@
 <template>
   <el-table :data="filterTableData" style="width: 100%">
-    <el-table-column label="Date" prop="date" width="180"/>
-    <el-table-column label="Title" prop="title" width="180"/>
-    <el-table-column label="Digest" prop="digest" width="450"/>
+    <el-table-column label="id" prop="id" width="50"/>
+    <el-table-column label="Article title" prop="articleTitle" width="180"/>
+    <el-table-column label="Article abstract" prop="article_abstract" width="180"/>
+    <el-table-column label="Create time" prop="createTime" width="150"/>
+    <el-table-column label="Update time" prop="updateTime" width="150"/>
     <el-table-column align="right">
       <template #header>
         <el-input v-model="search" size="small" placeholder="Type to search" />
       </template>
       <template #default="scope">
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+        <!-- scope 它是一个对象，包含了当前行的数据和索引等信息 -->
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>  
         <el-button
           size="small"
           type="danger"
@@ -34,13 +37,18 @@
 
 </template>
 
-
 <script lang="ts" setup>
-import { getAllTitle ,deleteArticle} from '@/apis/article'
-// import router from '@/router';
-import { useRoute, useRouter } from "vue-router"
-import { ref, reactive, computed ,} from "vue"
+import { getAllArticle ,fakeDelArticle} from '@/apis/article'
+import { useRouter } from "vue-router"
+import { ref, computed ,} from "vue"
+import type { Article } from '@/pojo/article'
 
+let article = {
+  userId: 1,
+  articleTitle: '',
+  articleAbstract: '',
+  articleContent: '',
+} as Article
 
 let paginationProps = {
   // 每页显示的数据条数
@@ -53,22 +61,49 @@ let paginationProps = {
 // 定义一个分页组件的事件处理函数
 let data = ref([
   {
-    title: '',
-    digest: '',
-    date: '',
+    id: '',
+    userId: '',
+    categoryId: '',
+    articleCover: '',
+    articleTitle: '',
+    articleAbstract: '',
+    articleContent: '',
+    isTop: '',
+    isFeatured: '',
+    isDelete: '',
+    status: '',
+    type: '',
+    password: '',
+    originalUrl: '',
+    createTime: '',
+    updateTime: '',
   }
 ])
 let currentPageData = ref([
   {
-    title: '',
-    digest: '',
-    date: '',
+    id: '',
+    userId: '',
+    categoryId: '',
+    articleCover: '',
+    articleTitle: '',
+    articleAbstract: '',
+    articleContent: '',
+    isTop: '',
+    isFeatured: '',
+    isDelete: '',
+    status: '',
+    type: '',
+    password: '',
+    originalUrl: '',
+    createTime: '',
+    updateTime: '',
   }
 ])
 const search = ref('')
-// let filterTableData:any
 let filterTableData= ref()
-// let filterTableData2= ref()
+
+
+
 const handlePagination = function (val:any) {
   // 根据当前页码和每页显示的数据条数，计算出当前页的数据范围
   let start = (val - 1) * paginationProps.pageSize
@@ -76,8 +111,6 @@ const handlePagination = function (val:any) {
   // 根据数据范围，从数据源中截取出当前页的数据
   currentPageData.value = data.value.slice(start, end)
   let currentPageDataJSON = JSON.parse(JSON.stringify(data.value.slice(start, end)) ) 
-  // console.log(currentPageDataJSON)
-
   //筛选
   filterTableData = computed(() =>
   currentPageData.value.filter(
@@ -86,15 +119,12 @@ const handlePagination = function (val:any) {
         data.title.toLowerCase().includes(search.value.toLowerCase())
     )
   )
-  // filterTableData2.value = filterTableData.value
-
-  console.log(filterTableData)
 };
 
-const getlistData = () => {
-    getAllTitle().then(res=>{
-      data.value = res.data
-      // console.log(data)
+const a = () => {
+  getAllArticle().then(res=>{
+      data.value = Object.values(res.data)
+      console.log(data.value)
       paginationProps.total = data.value.length
       // console.log(paginationProps.total)
 
@@ -102,25 +132,27 @@ const getlistData = () => {
       handlePagination(1);
     })
 }
-getlistData()
+a()
 
 const router = useRouter()
 //编辑
-const handleEdit = (index: number, row: title) => {
-  console.log(row.tid)
+const handleEdit = (index: number, row: any) => {
+  console.log(row)
   if(localStorage.getItem('status')=='admin') {
+    // 使用router.push将数据推送到
     router.push({
       path:'/edit',
-      query: row  //query接受对象
+      query: row  //query只接受对象
     })
 
   } else { console.log('权限不足，请联系管理员') }
 }
-//删除
-const handleDelete = (index: number, row: User) => {
-  const cid = row.tid
-  deleteArticle(cid,row.tid).then(res=>{
-    currentPageData.value.splice(index, 1);
+
+//删除(如何获取选定行的数据)
+const handleDelete = (index: number, row: Article) => {
+  fakeDelArticle(row).then(res=>{
+    console.log(res)
+    currentPageData.value.splice(index, 1);  // 删除指定引索德行
   })
 }
 </script>
@@ -138,3 +170,4 @@ const handleDelete = (index: number, row: User) => {
   margin-top: 20px;
 }
 </style>
+

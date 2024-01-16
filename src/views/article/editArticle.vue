@@ -7,72 +7,74 @@
       label-width="120px"
       class="demo-ruleForm"
     >
-    <el-form-item label="title" prop="title">
-    <el-input v-model="article.title" autocomplete="off" />
+    <el-form-item label="标题" prop="标题">
+    <el-input v-model="data.articleTitle" autocomplete="off" />
     </el-form-item>
 
-    <el-form-item label="date" prop="date">
+    <!-- <el-form-item label="创建日期" prop="创建日期">
         <el-date-picker
-            v-model="article.date"
+            v-model="article.createTime"
             label="Pick a date"
             placeholder="Pick a date"
             style="width: 100%"
         />
+    </el-form-item> -->
+
+    <el-form-item label="描述" prop="描述">
+        <el-input v-model="data.articleAbstract" type="textarea" />
     </el-form-item>
 
-    <el-form-item label="digest" prop="digest">
-        <el-input v-model="article.digest" type="textarea" />
-    </el-form-item>
-
-    <el-form-item prop="digest">
-        <v-md-editor
+    <el-form-item label="文章内容" prop="文章内容">
+        <!-- <v-md-editor
             v-model="content"
             :disabled-menus="[]"
             left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image center code | save emoji"
             @upload-image="handleUploadImage"
             :toolbar="toolbar"
             height=250%>
-        </v-md-editor>
+        </v-md-editor> -->
+        <mavon-editor
+            ref=md 
+            v-model="data.articleContent"
+            style="height: 100%;width: 100%"
+            @imgAdd="imgAdd"
+            @imgDel="imgDel">
+        </mavon-editor>  <!-- 增删图片的两个方法：imgAdd&imgDel -->    
     </el-form-item>
-    
     </el-form>
-    <el-button type="primary" @click="handler(ruleFormRef)">Submit</el-button>
+    
+    <el-button type="primary" @click="handler(ruleFormRef)">Submit</el-button><!-- 提交按钮 -->
 
   </template>
   
 <script lang="ts" setup>
-    import { reactive, ref,onBeforeMount, } from 'vue'
+    import { reactive, ref, } from 'vue'
     import type { FormInstance, FormRules } from 'element-plus'
     import { useRoute } from "vue-router"
     import { getContent,save,uploadFile } from '@/apis/article'
     import router from '@/router';
-    // import { ar } from 'element-plus/lib/locale/index.js';
-    import Vue from 'vue';
+    import type { Article } from '@/pojo/article';
 
+    // 获取是一个页面从router传过来的值
     const route = useRoute()
-    let article = ref()
-    article.value = route.query
-
-    const cid = ref(route.query.tid)
-    const tid = ref(route.query.tid)
-    const title = ref(route.query.title)
-    const digest = ref(route.query.digest)
-    const date = ref(route.query.date)
-    const content = ref()
-    const getData = () => {    
-        getContent(Number(cid.value)).then(res=>{
-            content.value = res.data.content
-            console.log(content)
-        })
-    }
-
-    onBeforeMount(()=>{
-        getData() 
-    })
-
+    let article = route.query
+    console.log("编辑页面接收的数据为：")
+    console.log(article)
+    let data = ref({
+        id: article.id,
+        articleTitle: article.articleTitle,
+        articleAbstract: article.articleAbstract,
+        articleContent: article.articleContent,
+        isDelete: article.isDelete
+    }) as unknown as Article
+    // 使用响应式变量避免v-model输入卡顿
+    const articleTitle = ref(article.articleTitle)
+    const articleAbstract = ref(article.articleAbstract)
+    const articleContent = ref(article.articleContent)
 
     const ruleFormRef = ref<FormInstance>()
 
+    // 
     const checkTitle = (rule: any, value: any, callback: any) => {
     if (value === '') {
         return callback(new Error('Please input the title'))
@@ -122,48 +124,38 @@
     };
 
     //上传本地图片
-    const handleUploadImage = (event:any, insertImage:any, files:any) => {
+    const md = ref();
+    const imgAdd = async (pos:any, file:any) => {
         const formData = new FormData();
-        formData.append('file', files[0]);
-        // console.log(files);
-        uploadFile(formData).then(res=>{
-            // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
-            insertImage({
-                url: res.data.url,
-                desc: res.data.desc,
-
-                width: 'auto',
-                margin: "100px",
-                height: 'auto',
-            })
-        }).catch(error=>{
-            console.log("上传文件失败,请重试")
+        formData.append('file', file);
+        uploadFile(formData).then((res) => {
+            md.value.$img2Url(pos, res.data.url);
         })
     }
+    //删除本地图片
+    const imgDel = () => {
 
+    }
+
+    //表单提交
     const handler = (formEl: FormInstance | undefined) => {
-    if (!formEl) return
+    if (!formEl) return  //表单不存在直接返回
     formEl.validate((valid) => {
         if (valid) {
-            save(
-            Number(cid.value),
-            content.value,
-            Number(tid.value),
-            // title.value,
-            article.value.title,
-            article.value.digest,
-            article.value.date,
-
-            ).then(res=>{
+            let article = data.value
+            // save()保存
+            save(article).then(res=>{
                 if(res.data) {
-                    console.log('successfully to update')
+                    // console.log('更新成功，正在跳转...')
+                    console.log(res.data)
                     router.push('/articleList')
                 } else {
-                    console.log('update faile')
+                    console.log(res.data)
+                    // console.log('更新失败，请重试')
                 }
             })
-            console.log('submit!')
-            // router.push('/articleList')
+            // console.log('submit!')
+            router.push('/articleList')
         } 
         else {
             console.log('error submit!')

@@ -1,64 +1,30 @@
-<template>
-    <el-form
-        ref="ruleFormRef"
-        :model="article"
-        status-icon
-        :rules="rules"
-        label-width="120px"
-        class="demo-ruleForm"
-    >
-    <el-form-item label="title" prop="title">
-    <el-input v-model="article.title" autocomplete="off" />
-    </el-form-item>
-
-    <el-form-item label="date" prop="date">
-        <el-date-picker
-            v-model="article.date"
-            label="Pick a date"
-            placeholder="Pick a date"
-            style="width: 100%"
-        />
-    </el-form-item>
-
-    <el-form-item label="digest" prop="digest">
-        <el-input v-model="article.digest" type="textarea" />
-    </el-form-item>
-
-    <el-form-item prop="content">
-        <v-md-editor
-            v-model="article.content"
-            :disabled-menus="[]"
-            left-toolbar="undo redo clear | h bold italic strikethrough quote | ul ol table hr | link image center code emoji align | save "
-            :toolbar="toolbar"
-            @upload-image="handleUploadImage"
-            :delete-image="deleteImage"
-            height=600px>
-        </v-md-editor>
-    </el-form-item>
-
-    </el-form>
-    <el-button type="primary" @click="handler(ruleFormRef)">发布</el-button>
-
-</template>
-  
 <script lang="ts" setup>
-    import { reactive, ref,onBeforeMount, } from 'vue'
+    import { reactive, ref } from 'vue'
     import type { FormInstance, FormRules } from 'element-plus'
-    import { useRoute } from "vue-router"
     import { insert,uploadFile } from '@/apis/article'
     import router from '@/router';
-    // import { ar } from 'element-plus/lib/locale/index.js';
-    import Vue from 'vue';
-import axios from 'axios';
+    import type { Article } from '@/pojo/article'
 
-    const route = useRoute()
-    let article = ref({
-        title: '',
-        digest: '',
-        date: '',
-        content: ''
-        }   
-    )
+
+
+    // TODO 获取当前用户id : 解析token中的id
+    // export interface Article {
+    //     userId: number,
+    //     articleTitle: string,
+    //     articleAbstract: string,
+    //     articleContent: string,
+    // } 
+    let timestamp = new Date().getTime()
+    //使用 as 关键字将接口转化为对象类型 
+    let article = {
+        id: '',
+        userId: localStorage.getItem("userId") as unknown as number,
+        articleTitle: '',
+        articleAbstract: '',
+        articleContent: '',
+    } as Article
+    // 使用reactive将接口转换为响应式代理
+    let state = reactive(article)
 
     const ruleFormRef = ref<FormInstance>()
 
@@ -93,9 +59,9 @@ import axios from 'axios';
 
     const rules = reactive<FormRules<typeof ruleForm>>({
     title: [{ validator: checkTitle, trigger: 'blur' }],
-    date: [{type: 'date',required: true,message: 'Please pick a date',trigger: 'change',}],
+    // date: [{type: 'date',required: true,message: 'Please pick a date',trigger: 'change',}],
     digest: [{ validator: checkDigest, trigger: 'blur' }],
-    content: [{ validator: checkContent, trigger: 'blur' }],
+    checkContent: [{ validator: checkContent, trigger: 'blur' }],
     })
 
     const toolbar = {
@@ -118,42 +84,29 @@ import axios from 'axios';
       },
     };
 
-    //上传本地图片
-    const handleUploadImage = (event:any, insertImage:any, files:any) => {
+    const md = ref();
+    const imgAdd = async (pos:any, file:any) => {
         const formData = new FormData();
-        formData.append('file', files[0]);
-        // console.log(files);
-        uploadFile(formData).then(res=>{
-            // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
-            insertImage({
-                url: res.data.url,
-                desc: res.data.desc,
-                width: 'auto',
-                height: 'auto',
-            })
-        }).catch(error=>{
-            console.log("上传文件失败,请重试")
+        formData.append('file', file);
+        uploadFile(formData).then((res) => {
+            md.value.$img2Url(pos, res.data.url);
         })
     }
 
+    
     // 删除图片
-    const deleteImage = (event:any, insertImage:any, files:any) => {
-        console.log("delete image successful!!!")
-    }
+    const imgDel = () => {}
 
+    // 新增文章
     const handler = (formEl: FormInstance | undefined) => {
     if (!formEl) return
     formEl.validate((valid) => {
         if (valid) {
-            console.log(article.value.content)
-            insert(
-                article.value.content,
-                article.value.title,
-                article.value.digest,
-                article.value.date,
-            ).then(res=>{
+            console.log(state)
+            insert(state).then(res=>{
                 if(res.data) {
-                    console.log('successfully to send')
+                    console.log(res)
+                    console.log('新增博客成功...正在返回博客列表')
                     router.push('/articleList')
                 } else {
                     console.log('update faile')
@@ -174,4 +127,58 @@ import axios from 'axios';
         formEl.resetFields()
     }
 </script>
-  
+<template>
+    <el-form
+        ref="ruleFormRef"
+        :model="article"
+        status-icon
+        :rules="rules"
+        label-width="120px"
+        class="demo-ruleForm"
+    >
+    <el-form-item label="title" prop="title">
+    <el-input v-model="state.articleTitle" autocomplete="off" />
+    </el-form-item>
+
+    <!-- <el-form-item label="date" prop="date">
+        <el-date-picker
+            v-model="state.create_time"
+            label="Pick a date"
+            placeholder="Pick a date"
+            style="width: 100%"
+        />
+    </el-form-item> -->
+
+    <el-form-item label="digest" prop="digest">
+        <el-input v-model="state.articleAbstract" type="textarea" />
+    </el-form-item>
+
+    <el-form-item prop="content">
+        
+    <div class="mavonEditor">
+        <mavon-editor
+            v-model="state.articleContent"
+            ref=md 
+            style="height: 100%;width: 100%"
+            @imgAdd="imgAdd"
+            @imgDel="imgDel">
+        </mavon-editor>    
+    </div>
+    </el-form-item>
+    </el-form>
+    <el-button  class="button" type="primary" @click="handler(ruleFormRef)">发布</el-button>
+
+</template>
+<style scoped>
+.mavonEditor {
+  width: 100%;
+  height: 500px;
+}
+.button {
+    padding: 20px;
+    text-align: center;
+    width: 80%;
+    margin-left: 15%;
+    /* margin-right: 0%; */
+}
+</style>

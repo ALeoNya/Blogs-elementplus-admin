@@ -23,22 +23,15 @@
 
   let username = ref('')
   let password = ref('') 
-  const loginData = {
-    username: '',
-    password: ''
-  }
 
   const loginHandle = () => {
     login(username.value, password.value).then(res=>{
-      // console.log(res.data.msg)
-      if(res.data.code==100) {
-        if(res.data.auth=='admin') {  //管理员
-          localStorage.setItem('status','admin')
-          router.push('/')
-        } else if(res.data.auth=='user') {  //游客
-          localStorage.setItem('status','user')
-          router.push('/')
-        }
+      console.log(res)
+      console.log(res.data.status)
+      if(res.code == 417) {
+        localStorage.setItem("status",res.data.status)
+        localStorage.setItem("userId",res.data.userId)
+        router.push('/')
       }
     }).catch(err=>{
       console.log(err)

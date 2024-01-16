@@ -1,10 +1,11 @@
 import request from "@/util/request";
-import exp from "constants";
+import type { Article } from '@/pojo/article'
 
-export const getAllTitle  = function() {
+// 获取所有的文章
+export const getAllArticle = function() {
     return request({
-        url: '/getAllTitle',
-        method: 'get'
+        url: '/article/allArticle',
+        method: 'post'
     })
 }
 
@@ -18,45 +19,83 @@ export const getContent  = function(cid:number) {
     })
 }
 
-
-export const save = function(cid:number,content:string,tid:number,title:string,digest:string,date:string) {
+// 文章更新
+export const save = function(article:Article) {
     return request({
-        url: '/article/updateArticle',
+        url: '/article/updArticle',
         method: 'post',
         data: {
-            cid,
-            content,
-            tid,
-            title,
-            digest,
-            date
+            id: article.id,
+            articleTitle: article.articleTitle,
+            articleAbstract: article.articleAbstract,
+            articleContent: article.articleContent,
+            isDelete: article.isDelete
+        }
+    })  
+}
+
+// 假删除
+export const fakeDelArticle = function(article:Article) {
+    return request({
+        url: '/article/fakeDelArticle',
+        method: 'post',
+        data: {
+            id: article.id
         }
     })
 }
 
-export const deleteArticle = function(tid:number,cid:number) {
+// 真删除
+export const deleteArticle = function(article:Article) {
     return request({
-        url: '/article/deleteArticle',
+        url: '/article/delArticle',
         method: 'post',
         data: {
-            tid,
-            cid
+            id: article.id
         }
     })
 }
 
-export const insert = function(content:string,title:string,digest:string,date:string) {
+// export const insert = function(user_id:string,article_title:string,article_content:string,article_abstract:string,create_time:string) {
+//     return request({
+//         url: '/article/InsertArticle',
+//         method: 'post',
+//         data: {
+//             title,
+//             digest,
+//             date,
+//             content,         
+//         }
+//     })
+// }
+
+// export const insert = function(userId:string,articleTitle:string,articleAbstract:string,articleContent:string) {
+//     return request({
+//         url: '/addArticle',
+//         method: 'post',
+//         data: {
+//             userId,
+//             articleTitle,
+//             articleAbstract,
+//             articleContent,         
+//         }
+//     })
+// }
+
+export const insert = function(article: Article) {
+    console.log(article)
     return request({
-        url: '/article/InsertArticle',
+        url: '/addArticle',
         method: 'post',
         data: {
-            title,
-            digest,
-            date,
-            content,         
+            userId: article.userId,
+            articleTitle: article.articleTitle,
+            articleAbstract: article.articleAbstract,
+            articleContent: article.articleContent  
         }
     })
 }
+
 
 export const uploadFile = function(formData:FormData) {
     return request({
