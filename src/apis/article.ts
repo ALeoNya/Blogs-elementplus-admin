@@ -9,6 +9,14 @@ export const getAllArticle = function() {
     })
 }
 
+// 获取所有的假删除文章
+export const getAllDelArticle = function() {
+    return request({
+        url: '/article/allDelArticle',
+        method: 'post'
+    })
+}
+
 export const getContent  = function(cid:number) {
     return request({
         url: '/article/getContentByid',
@@ -56,31 +64,16 @@ export const deleteArticle = function(article:Article) {
     })
 }
 
-// export const insert = function(user_id:string,article_title:string,article_content:string,article_abstract:string,create_time:string) {
-//     return request({
-//         url: '/article/InsertArticle',
-//         method: 'post',
-//         data: {
-//             title,
-//             digest,
-//             date,
-//             content,         
-//         }
-//     })
-// }
-
-// export const insert = function(userId:string,articleTitle:string,articleAbstract:string,articleContent:string) {
-//     return request({
-//         url: '/addArticle',
-//         method: 'post',
-//         data: {
-//             userId,
-//             articleTitle,
-//             articleAbstract,
-//             articleContent,         
-//         }
-//     })
-// }
+// 假删除恢复
+export const recoverArticle = function(article:Article) {
+    return request({
+        url: '/article/recoverArticle',
+        method: 'post',
+        data: {
+            id: article.id
+        }
+    })
+}
 
 export const insert = function(article: Article) {
     console.log(article)

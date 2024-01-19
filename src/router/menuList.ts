@@ -3,7 +3,7 @@ const menuList = [
     {       
         name: '文章管理',
         meta:{ icon: 'icon-telegram', status: 'admin', title: 'Article Manage'},  
-        path: '/articleManage',
+        path: '/articleManage',  //可以在其他地方用这个名字来引用这个路由，而不用写出完整的路径。1
         component: layout,
         redirect: '/articleManage/ArticleList',
         children:  [
@@ -21,15 +21,21 @@ const menuList = [
             },
             {   
                 name: '分类管理',
-                meta:{ icon: 'Location',title: 'Article Classify'},  
+                meta:{ icon: 'Location',title: 'Article Category'},  
                 path: '/sort',
-                component: () => import('../views/test/test.vue')
+                component: () => import('../views/category/categoryList.vue')
             },
             {
                 name: '标签管理',
-                meta:{ icon: 'Location',title: 'Tag Manage'},  
+                meta:{ icon: 'Location',title: 'Article Tag'},  
                 path: '/tag',
                 component: () => import('../views/test/test.vue')
+            },
+            {
+                name: '文章回收站',
+                meta:{ icon: 'Location',title: 'Article Recycle'},  
+                path: '/recycle',
+                component: () => import('../views/article/articleRecycle.vue')
             },
         ]
     },

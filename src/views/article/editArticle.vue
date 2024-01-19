@@ -44,7 +44,6 @@
     </el-form>
     
     <el-button type="primary" @click="handler(ruleFormRef)">Submit</el-button><!-- 提交按钮 -->
-
   </template>
   
 <script lang="ts" setup>
