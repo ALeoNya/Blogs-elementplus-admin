@@ -22,14 +22,14 @@ const menuList = [
             {   
                 name: '分类管理',
                 meta:{ icon: 'Location',title: 'Article Category'},  
-                path: '/sort',
-                component: () => import('../views/category/categoryList.vue')
+                path: '/category',
+                component: () => import('../views/category/categoryList2.vue')
             },
             {
                 name: '标签管理',
                 meta:{ icon: 'Location',title: 'Article Tag'},  
                 path: '/tag',
-                component: () => import('../views/test/test.vue')
+                component: () => import('../views/tag/aaa.vue')
             },
             {
                 name: '文章回收站',

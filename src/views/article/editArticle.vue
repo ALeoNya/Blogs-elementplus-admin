@@ -50,7 +50,7 @@
     import { reactive, ref, } from 'vue'
     import type { FormInstance, FormRules } from 'element-plus'
     import { useRoute } from "vue-router"
-    import { getContent,save,uploadFile } from '@/apis/article'
+    import { save,uploadFile } from '@/apis/article'
     import router from '@/router';
     import type { Article } from '@/pojo/article';
 

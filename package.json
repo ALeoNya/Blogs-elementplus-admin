@@ -13,7 +13,7 @@
   "dependencies": {
     "@kangc/v-md-editor": "^2.1.7",
     "axios": "^1.4.0",
-    "element-plus": "^2.3.9",
+    "element-plus": "^2.5.2",
     "markdown-it-emoji": "^2.0.2",
     "mavon-editor": "^3.0.1",
     "md-editor-v3": "^4.6.1",

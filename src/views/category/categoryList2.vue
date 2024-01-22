@@ -21,6 +21,23 @@
     </el-table-column>
   </el-table>
 
+<!-- 弹框：传入原本的元素并且可以更改 -->
+  <el-dialog v-model="dialogFormVisible" title="更改分类信息">
+      <el-form :model="categoryName">
+        <el-form-item label="分类名称" :label-width="formLabelWidth">
+          <el-input v-model="categoryName" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false">
+            Confirm
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+
   <!-- 分页器 -->
   <div class="example-pagination-block">
     <div class="pagination">
@@ -37,11 +54,13 @@
 </template>
 
 <script lang="ts" setup>
-import { allCategory } from '@/apis/category'
+import { allCategory, updcatagoryName } from '@/apis/category'
 import { useRouter } from "vue-router"
 import { ref, computed ,} from "vue"
 import type { Article } from '@/pojo/article'
 
+const formLabelWidth = '140px'
+let dialogFormVisible = ref(false)
 let article = {
   userId: 1,
   articleTitle: '',
@@ -58,51 +77,13 @@ let paginationProps = {
   total: 0,
 };
 // 定义一个分页组件的事件处理函数
-let data = ref([
-  {
-    // id: '',
-    // userId: '',
-    // categoryId: '',
-    // articleCover: '',
-    // articleTitle: '',
-    // articleAbstract: '',
-    // articleContent: '',
-    // isTop: '',
-    // isFeatured: '',
-    // isDelete: '',
-    // status: '',
-    // type: '',
-    // password: '',
-    // originalUrl: '',
-    // createTime: '',
-    // updateTime: '',
-  } as Article
-])
-let currentPageData = ref([
-  {
-    // id: '',
-    // userId: '',
-    // categoryId: '',
-    // articleCover: '',
-    // articleTitle: '',
-    // articleAbstract: '',
-    // articleContent: '',
-    // isTop: '',
-    // isFeatured: '',
-    // isDelete: '',
-    // status: '',
-    // type: '',
-    // password: '',
-    // originalUrl: '',
-    // createTime: '',
-    // updateTime: '',
-  } as Article
-])
+let data = ref([{} as Article])
+let currentPageData = ref([{} as Article])
 const search = ref('')
 let filterTableData= ref()
 
 
-
+// 分页方法
 const handlePagination = function (val:any) {
   // 根据当前页码和每页显示的数据条数，计算出当前页的数据范围
   let start = (val - 1) * paginationProps.pageSize
@@ -120,6 +101,7 @@ const handlePagination = function (val:any) {
   )
 };
 
+// 列表展示
 const allList = () => {
   allCategory().then(res=>{
       data.value = Object.values(res.data)
@@ -133,17 +115,21 @@ const allList = () => {
 allList()
 
 const router = useRouter()
+
 //编辑
+let categoryName = ref()
 const handleEdit = (index: number, row: any) => {
   console.log(row)
+  dialogFormVisible.value = true  //展开编辑弹框
+  categoryName = ref(row.categoryName)
   if(localStorage.getItem('status')=='admin') {
-    // 使用router.push将数据推送到
-    router.push({
-      path:'/edit',
-      query: row  //query只接受对象
+    // 更新方法（传入categoryName
+    updcatagoryName(categoryName.value).then(res=>{
+      
     })
-
-  } else { console.log('权限不足，请联系管理员') }
+  } else {
+    console.log('权限不足，请联系管理员')
+  }
 }
 
 //删除(如何获取选定行的数据)

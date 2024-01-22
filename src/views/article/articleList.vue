@@ -1,8 +1,30 @@
 <template>
   <el-table :data="filterTableData" style="width: 100%">
+
+    <el-table-column type="expand">
+      <template #default="props">
+        <div m="4">
+          <p m="t-0 b-2">文章标题: {{ props.row.articleTitle }}</p>
+          <p m="t-0 b-2">City: {{ props.row.articleAbstract }}</p>
+          <p m="t-0 b-2">Address: {{ props.row.createTime }}</p>
+          <p m="t-0 b-2">Zip: {{ props.row.createTime }}</p>
+          <h3>Family</h3>
+          <!-- 这里填入category和tag信息 -->
+          <el-table :data="props.row.family" :border="childBorder">
+            <el-table-column label="Name" prop="name" />
+            <el-table-column label="State" prop="state" />
+            <el-table-column label="City" prop="city" />
+            <el-table-column label="Address" prop="address" />
+            <el-table-column label="Zip" prop="zip" />
+          </el-table>
+        </div>
+      </template>
+    </el-table-column>
+
+
     <el-table-column label="id" prop="id" width="50"/>
     <el-table-column label="Article title" prop="articleTitle" width="180"/>
-    <el-table-column label="Article abstract" prop="article_abstract" width="180"/>
+    <el-table-column label="Article abstract" prop="articleAbstract" width="180"/>
     <el-table-column label="Create time" prop="createTime" width="150"/>
     <el-table-column label="Update time" prop="updateTime" width="150"/>
     <el-table-column align="right">
