@@ -22,7 +22,7 @@ const menuList = [
             {   
                 name: '分类管理',
                 meta:{ icon: 'Location',title: 'Article Category'},  
-                path: '/category',
+                path: '/categoryList',
                 component: () => import('../views/category/categoryList2.vue')
             },
             {

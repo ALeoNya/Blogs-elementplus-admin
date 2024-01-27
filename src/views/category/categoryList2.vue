@@ -1,29 +1,24 @@
 <template>
-  <el-table :data="filterTableData" style="width: 100%">
+  <el-table v-if="tableData.length > 0" :data="filterTableData" style="width: 100%">
     <el-table-column label="id" prop="id" width="50"/>
-    <el-table-column label="Article title" prop="categoryName" width="180"/>
-    <el-table-column label="Create time" prop="createTime" width="150"/>
-    <el-table-column label="Update time" prop="updateTime" width="150"/>
+    <el-table-column label="Category name" prop="categoryName" width="250"/>
+    <el-table-column label="Create time" prop="createTime" width="250"/>
+    <el-table-column label="Update time" prop="updateTime" width="250"/>
     <el-table-column align="right">
       <template #header>
-        <el-input v-model="search" size="small" placeholder="Type to search" />
+        <el-input v-model="search" style="width: 40%" size="small" placeholder="Type to search" />
       </template>
       <template #default="scope">
         <!-- scope 它是一个对象，包含了当前行的数据和索引等信息 -->
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>  
-        <el-button
-          size="small"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)"
-          >Delete</el-button
-        >
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
       </template>
     </el-table-column>
   </el-table>
 
 <!-- 弹框：传入原本的元素并且可以更改 -->
   <el-dialog v-model="dialogFormVisible" title="更改分类信息">
-      <el-form :model="categoryName">
+      <el-form :model="categoryName.value">
         <el-form-item label="分类名称" :label-width="formLabelWidth">
           <el-input v-model="categoryName" autocomplete="off" />
         </el-form-item>
@@ -31,7 +26,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">
+          <el-button type="primary" @click="udpCategory()">
             Confirm
           </el-button>
         </span>
@@ -56,17 +51,14 @@
 <script lang="ts" setup>
 import { allCategory, updcatagoryName } from '@/apis/category'
 import { useRouter } from "vue-router"
-import { ref, computed ,} from "vue"
-import type { Article } from '@/pojo/article'
+import { ref, reactive, computed, } from "vue"
+import type { Category } from '@/pojo/category'
 
 const formLabelWidth = '140px'
 let dialogFormVisible = ref(false)
-let article = {
-  userId: 1,
-  articleTitle: '',
-  articleAbstract: '',
-  articleContent: '',
-} as Article
+
+let data = reactive([] as Category[])
+const search = ref('')
 
 let paginationProps = {
   // 每页显示的数据条数
@@ -76,11 +68,9 @@ let paginationProps = {
   // 数据总条数
   total: 0,
 };
-// 定义一个分页组件的事件处理函数
-let data = ref([{} as Article])
-let currentPageData = ref([{} as Article])
-const search = ref('')
-let filterTableData= ref()
+let filterTableData = ref([] as Category[]) 
+let tableData = ref([] as Category[])
+let currentPageData = ref([] as Category[])
 
 
 // 分页方法
@@ -88,45 +78,49 @@ const handlePagination = function (val:any) {
   // 根据当前页码和每页显示的数据条数，计算出当前页的数据范围
   let start = (val - 1) * paginationProps.pageSize
   let end = val * paginationProps.pageSize
-  // 根据数据范围，从数据源中截取出当前页的数据
-  currentPageData.value = data.value.slice(start, end)
-  let currentPageDataJSON = JSON.parse(JSON.stringify(data.value.slice(start, end)) ) 
-  //筛选
+  currentPageData.value = tableData.value.slice(start, end)
   filterTableData = computed(() =>
-  currentPageData.value.filter(
-      (data:any) =>
+    currentPageData.value.filter(
+      (data) =>
         !search.value ||
-        data.title.toLowerCase().includes(search.value.toLowerCase())
+        data.categoryName.toLowerCase().includes(search.value.toLowerCase())
     )
   )
-};
+}
 
 // 列表展示
 const allList = () => {
   allCategory().then(res=>{
-      data.value = Object.values(res.data)
-      console.log(data.value)
-      paginationProps.total = data.value.length
-
-      // 调用分页组件的事件处理函数，显示第一页的数据
-      handlePagination(1);
-    })
+    tableData.value = Object.values(res.data)
+    handlePagination(1)
+    // console.log(tableData.value)
+  })
 }
 allList()
+// console.log(filterTableData.value)
 
 const router = useRouter()
 
-//编辑
-let categoryName = ref()
+// 编辑
+let categoryName = ref() // categoryName是作为弹框和列表的响应式同步使用
+let id = ref()
 const handleEdit = (index: number, row: any) => {
   console.log(row)
   dialogFormVisible.value = true  //展开编辑弹框
-  categoryName = ref(row.categoryName)
+  categoryName.value = row.categoryName
+  id = ref(row.id)
+}
+
+// 更新
+const udpCategory = () => {
   if(localStorage.getItem('status')=='admin') {
     // 更新方法（传入categoryName
-    updcatagoryName(categoryName.value).then(res=>{
-      
+    updcatagoryName(categoryName.value,id.value).then(res=>{
+      console.log(res)
+      // 更新列表（修改响应式数组tagData中的值
+      filterTableData.value[id.value - 1].categoryName = categoryName.value
     })
+    dialogFormVisible.value = false
   } else {
     console.log('权限不足，请联系管理员')
   }

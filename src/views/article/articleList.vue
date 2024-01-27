@@ -1,6 +1,5 @@
 <template>
   <el-table :data="filterTableData" style="width: 100%">
-
     <el-table-column type="expand">
       <template #default="props">
         <div m="4">

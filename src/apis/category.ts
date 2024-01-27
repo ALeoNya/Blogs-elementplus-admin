@@ -10,12 +10,13 @@ export const allCategory = function() {
 }
 
 // 更新catagoryName字段
-export const updcatagoryName = function(categoryName:string) {
+export const updcatagoryName = function(categoryName:string,id:number) {
     return request({
         url: '/article/updCategory',
         method: 'post',
         data: {
-            categoryName: categoryName
+            categoryName: categoryName,
+            id: id
         }
     })
 }

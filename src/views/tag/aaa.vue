@@ -1,97 +1,81 @@
 <template>
-    <!-- <el-button text @click="dialogTableVisible = true">
-      open a Table nested Dialog
-    </el-button>
-  
-    <el-dialog v-model="dialogTableVisible" title="Shipping address">
-      <el-table :data="gridData">
-        <el-table-column property="date" label="Date" width="150" />
-        <el-table-column property="name" label="Name" width="200" />
-        <el-table-column property="address" label="Address" />
-      </el-table>
-    </el-dialog> -->
-  
-    <!-- Form -->
-    <el-button text @click="dialogFormVisible = true">
-      open a Form nested Dialog
-    </el-button>
-  
-    <el-dialog v-model="dialogFormVisible" title="Shipping address">
-      <el-form :model="form">
-        <el-form-item label="Promotion name" :label-width="formLabelWidth">
-          <el-input v-model="form.name" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="Zones" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="Please select a zone">
-            <el-option label="Zone No.1" value="shanghai" />
-            <el-option label="Zone No.2" value="beijing" />
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="dialogFormVisible = false">
-            Confirm
-          </el-button>
-        </span>
+  <el-table v-if="tableData.length > 0" :data="filterTableData" style="width: 100%">
+    <el-table-column label="Id" prop="id" />
+    <el-table-column label="CategoryName" prop="categoryName" />
+    <el-table-column align="right">
+      <template #header>
+        <el-input v-model="search" size="small" placeholder="Type to search" />
       </template>
-    </el-dialog>
+      <template #default="scope">
+        <el-button size="small" @click="handleEdit(scope.$index, scope.row)"
+          >Edit</el-button
+        >
+        <el-button
+          size="small"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)"
+          >Delete</el-button
+        >
+      </template>
+    </el-table-column>
+  </el-table>
+</template>
 
-  </template>
-  
-  <script lang="ts" setup>
-  import { reactive, ref } from 'vue'
-  
-  const dialogFormVisible = ref(false)
-  const formLabelWidth = '140px'
-  
-  const form = reactive({
-    name: '',
-    region: '',
-    date1: '',
-    date2: '',
-    delivery: false,
-    type: [],
-    resource: '',
-    desc: '',
+<script lang="ts" setup>
+import { allCategory, updcatagoryName } from '@/apis/category'
+import { useRouter } from "vue-router"
+import { ref, reactive, computed, } from "vue"
+interface Category {
+  id: number,
+  categoryName: string,
+  createTime: string,
+  updateTime: string
+} 
+let paginationProps = {
+  // 每页显示的数据条数
+  pageSize: 10,
+  // 当前页码
+  currentPage: 1,
+  // 数据总条数
+  total: 0,
+};
+const search = ref('')
+let filterTableData = ref([] as Category[]) 
+let tableData = ref([] as Category[])
+let currentPageData = ref([] as Category[])
+
+// 分页
+const handlePagination = function (val:any) {
+  // 根据当前页码和每页显示的数据条数，计算出当前页的数据范围
+  let start = (val - 1) * paginationProps.pageSize
+  let end = val * paginationProps.pageSize
+  currentPageData.value = tableData.value.slice(start, end)
+  filterTableData = computed(() =>
+    currentPageData.value.filter(
+      (data) =>
+        !search.value ||
+        data.categoryName.toLowerCase().includes(search.value.toLowerCase())
+    )
+  )
+}
+
+// 所有列表
+const allList = () => {
+  allCategory().then(res=>{
+    tableData.value = Object.values(res.data)
+    handlePagination(1)
+    console.log(tableData.value)
   })
-  
-  const gridData = [
-    {
-      date: '2016-05-02',
-      name: 'John Smith',
-      address: 'No.1518,  Jinshajiang Road, Putuo District',
-    },
-    {
-      date: '2016-05-04',
-      name: 'John Smith',
-      address: 'No.1518,  Jinshajiang Road, Putuo District',
-    },
-    {
-      date: '2016-05-01',
-      name: 'John Smith',
-      address: 'No.1518,  Jinshajiang Road, Putuo District',
-    },
-    {
-      date: '2016-05-03',
-      name: 'John Smith',
-      address: 'No.1518,  Jinshajiang Road, Putuo District',
-    },
-  ]
-  </script>
-  <style scoped>
-  .el-button--text {
-    margin-right: 15px;
-  }
-  .el-select {
-    width: 300px;
-  }
-  .el-input {
-    width: 300px;
-  }
-  .dialog-footer button:first-child {
-    margin-right: 10px;
-  }
-  </style>
-  
+}
+allList()
+
+const handleEdit = (index: number, row: Category) => {
+  console.log(index, row)
+}
+const handleDelete = (index: number, row: Category) => {
+  console.log(index, row)
+}
+
+
+
+</script>
