@@ -23,19 +23,40 @@ const menuList = [
                 name: '分类管理',
                 meta:{ icon: 'Location',title: 'Article Category'},  
                 path: '/categoryList',
-                component: () => import('../views/category/categoryList2.vue')
+                component: () => import('../views/category/categoryList.vue')
             },
             {
                 name: '标签管理',
                 meta:{ icon: 'Location',title: 'Article Tag'},  
                 path: '/tag',
-                component: () => import('../views/tag/aaa.vue')
+                component: () => import('../views/tag/tagList.vue')
             },
             {
                 name: '文章回收站',
                 meta:{ icon: 'Location',title: 'Article Recycle'},  
                 path: '/recycle',
                 component: () => import('../views/article/articleRecycle.vue')
+            },
+        ]
+    },
+    {
+        name: '权限管理',
+        meta:{ icon: 'Location', status: 'admin', title: 'Authority Manage'},  
+        path: '/authority',
+        component: layout,
+        redirect: '/authorityManage/userList',
+        children:  [
+            {   
+                name: '接口管理',
+                meta:{ icon: 'Location',title: 'Api Manage'},  
+                path: '/authority/apiList',
+                component: () => import('../views/resource/apiManage.vue')
+            },
+            {
+                name: '角色管理',
+                meta:{ icon: 'Location',title: 'Role Manage'},  
+                path: '/authority/roleList',
+                component: () => import('../views/test/test.vue')
             },
         ]
     },
@@ -50,12 +71,6 @@ const menuList = [
                 name: '用户列表',
                 meta:{ icon: 'Location',title: 'User List'},  
                 path: '/userList',
-                component: () => import('../views/test/test.vue')
-            },
-            {
-                name: '权限管理',
-                meta:{ icon: 'Location',title: 'Authority Article'},  
-                path: '/authority',
                 component: () => import('../views/test/test.vue')
             },
         ]

@@ -10,9 +10,21 @@ export const allCategory = function() {
 }
 
 // 更新catagoryName字段
-export const updcatagoryName = function(categoryName:string,id:number) {
+export const updCatagoryName = function(categoryName:string,id:number) {
     return request({
         url: '/article/updCategory',
+        method: 'post',
+        data: {
+            categoryName: categoryName,
+            id: id
+        }
+    })
+}
+
+// 删除catagoryName字段
+export const delCatagory = function(id:number, categoryName:string) {
+    return request({
+        url: '/article/delCategory',
         method: 'post',
         data: {
             categoryName: categoryName,

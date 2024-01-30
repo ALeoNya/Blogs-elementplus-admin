@@ -1,7 +1,7 @@
 <template>
   <el-table v-if="tableData.length > 0" :data="filterTableData" style="width: 100%">
-    <el-table-column label="id" prop="id" width="50"/>
-    <el-table-column label="Category name" prop="categoryName" width="250"/>
+    <el-table-column label="id" prop="id" width="200"/>
+    <el-table-column label="Tag name" prop="tagName" width="250"/>
     <el-table-column label="Create time" prop="createTime" width="250"/>
     <el-table-column label="Update time" prop="updateTime" width="250"/>
     <el-table-column align="right">
@@ -18,9 +18,9 @@
 
 <!-- 弹框：传入原本的元素并且可以更改 -->
   <el-dialog v-model="dialogFormVisible" title="更改分类信息">
-      <el-form :model="categoryName.value">
+      <el-form :model="tagName.value">
         <el-form-item label="分类名称" :label-width="formLabelWidth">
-          <el-input v-model="categoryName" autocomplete="off" />
+          <el-input v-model="tagName" autocomplete="off" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -49,15 +49,20 @@
 </template>
 
 <script lang="ts" setup>
-import { allCategory, updcatagoryName } from '@/apis/category'
+import { delTag, updTag, tagList } from '@/apis/tag'
 import { useRouter } from "vue-router"
 import { ref, reactive, computed, } from "vue"
-import type { Category } from '@/pojo/category'
 
+interface Tag {
+  id: number,
+  tagName: string,
+  createTime: number,
+  updateTime: number
+}
 const formLabelWidth = '140px'
 let dialogFormVisible = ref(false)
 
-let data = reactive([] as Category[])
+let data = reactive([] as Tag[])
 const search = ref('')
 
 let paginationProps = {
@@ -68,9 +73,9 @@ let paginationProps = {
   // 数据总条数
   total: 0,
 };
-let filterTableData = ref([] as Category[]) 
-let tableData = ref([] as Category[])
-let currentPageData = ref([] as Category[])
+let filterTableData = ref([] as Tag[]) 
+let tableData = ref([] as Tag[])
+let currentPageData = ref([] as Tag[])
 
 
 // 分页方法
@@ -83,17 +88,17 @@ const handlePagination = function (val:any) {
     currentPageData.value.filter(
       (data) =>
         !search.value ||
-        data.categoryName.toLowerCase().includes(search.value.toLowerCase())
+        data.tagName.toLowerCase().includes(search.value.toLowerCase())
     )
   )
 }
 
 // 列表展示
 const allList = () => {
-  allCategory().then(res=>{
+  tagList().then(res=>{
     tableData.value = Object.values(res.data)
     handlePagination(1)
-    // console.log(tableData.value)
+    console.log(tableData.value)
   })
 }
 allList()
@@ -102,12 +107,12 @@ allList()
 const router = useRouter()
 
 // 编辑
-let categoryName = ref() // categoryName是作为弹框和列表的响应式同步使用
+let tagName = ref() // categoryName是作为弹框和列表的响应式同步使用
 let id = ref()
 const handleEdit = (index: number, row: any) => {
   console.log(row)
   dialogFormVisible.value = true  //展开编辑弹框
-  categoryName.value = row.categoryName
+  tagName.value = row.tagName
   id = ref(row.id)
 }
 
@@ -115,10 +120,10 @@ const handleEdit = (index: number, row: any) => {
 const udpCategory = () => {
   if(localStorage.getItem('status')=='admin') {
     // 更新方法（传入categoryName
-    updcatagoryName(categoryName.value,id.value).then(res=>{
+    updTag().then(res=>{
       console.log(res)
       // 更新列表（修改响应式数组tagData中的值
-      filterTableData.value[id.value - 1].categoryName = categoryName.value
+      filterTableData.value[id.value - 1].tagName = tagName.value
     })
     dialogFormVisible.value = false
   } else {
@@ -127,12 +132,12 @@ const udpCategory = () => {
 }
 
 //删除(如何获取选定行的数据)
-// const handleDelete = (index: number, row: Article) => {
-//   fakeDelArticle(row).then(res=>{
-//     console.log(res)
-//     currentPageData.value.splice(index, 1);  // 删除指定引索德行
-//   })
-// }
+ const handleDelete = (index: number, row: Tag) => {
+   delTag().then(res=>{
+     console.log(res)
+     currentPageData.value.splice(index, 1);  // 删除指定引索德行
+   })
+ }
 </script>
 <style scoped>
 .example-pagination-block + .example-pagination-block {
