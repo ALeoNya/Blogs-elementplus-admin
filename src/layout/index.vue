@@ -10,7 +10,7 @@
         <el-container>
           <el-header class="Header">Header(这里是选项栏)</el-header>
           <el-main class="Main">
-            <router-view></router-view>
+            <router-view style="margin: 0%;padding: 0%;"></router-view>
           </el-main>
         </el-container>
       </el-container>
@@ -35,6 +35,6 @@
     background-color: deeppink;
   }
   .Main {
-    background-color: white;
+    background-color: rgb(237, 242, 247);
   }
 </style>

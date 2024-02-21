@@ -17,6 +17,17 @@ export const updTag = function() {
     })
 }
 
+export const addTag = function(newTagName:string,id:number) {
+    return request({
+        url: '/tag/addTag',
+        method: 'post',
+        data: {
+            id: id,
+            tagName: newTagName 
+        }
+    })
+}
+
 export const delTag = function() {
     return request({
         url: '',

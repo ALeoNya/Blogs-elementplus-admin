@@ -4,31 +4,31 @@
       <template #default="props">
         <div m="4">
           <p m="t-0 b-2">文章标题: {{ props.row.articleTitle }}</p>
-          <p m="t-0 b-2">City: {{ props.row.articleAbstract }}</p>
-          <p m="t-0 b-2">Address: {{ props.row.createTime }}</p>
-          <p m="t-0 b-2">Zip: {{ props.row.createTime }}</p>
-          <h3>Family</h3>
+          <p m="t-0 b-2">文章描述: {{ props.row.articleAbstract }}</p>
+          <p m="t-0 b-2">创建时间: {{ props.row.createTime }}</p>
+          <p m="t-0 b-2">更新时间: {{ props.row.updateTime }}</p>
+          <!-- <h3>Family</h3> -->
           <!-- 这里填入category和tag信息 -->
-          <el-table :data="props.row.family" :border="childBorder">
+          <!-- <el-table :data="props.row.family" :border="childBorder">
             <el-table-column label="Name" prop="name" />
             <el-table-column label="State" prop="state" />
             <el-table-column label="City" prop="city" />
             <el-table-column label="Address" prop="address" />
             <el-table-column label="Zip" prop="zip" />
-          </el-table>
+          </el-table> -->
         </div>
       </template>
     </el-table-column>
 
 
-    <el-table-column label="id" prop="id" width="50"/>
-    <el-table-column label="Article title" prop="articleTitle" width="180"/>
-    <el-table-column label="Article abstract" prop="articleAbstract" width="180"/>
-    <el-table-column label="Create time" prop="createTime" width="150"/>
-    <el-table-column label="Update time" prop="updateTime" width="150"/>
+    <!-- <el-table-column label="id" prop="id" width="50"/> -->
+    <el-table-column label="Article title" prop="articleTitle" width="200"/>
+    <el-table-column label="Article abstract" prop="articleAbstract" width="200"/>
+    <el-table-column label="Create time" prop="createTime" width="200"/>
+    <el-table-column label="Update time" prop="updateTime" width="200"/>
     <el-table-column align="right">
       <template #header>
-        <el-input v-model="search" size="small" placeholder="Type to search" />
+        <el-input v-model="search" style="width: 60%" size="small" placeholder="Type to search" />
       </template>
       <template #default="scope">
         <!-- scope 它是一个对象，包含了当前行的数据和索引等信息 -->
@@ -51,7 +51,7 @@
         @current-change="handlePagination"
         v-model:current-page="paginationProps.currentPage"
         layout="prev, pager, next"
-        :total= data.length >
+        :total= tableData.length >
       </el-pagination>
     </div>
   </div>
@@ -64,13 +64,6 @@ import { useRouter } from "vue-router"
 import { ref, computed ,} from "vue"
 import type { Article } from '@/pojo/article'
 
-let article = {
-  userId: 1,
-  articleTitle: '',
-  articleAbstract: '',
-  articleContent: '',
-} as Article
-
 let paginationProps = {
   // 每页显示的数据条数
   pageSize: 10,
@@ -80,73 +73,33 @@ let paginationProps = {
   total: 0,
 };
 // 定义一个分页组件的事件处理函数
-let data = ref([
-  {
-    // id: '',
-    // userId: '',
-    // categoryId: '',
-    // articleCover: '',
-    // articleTitle: '',
-    // articleAbstract: '',
-    // articleContent: '',
-    // isTop: '',
-    // isFeatured: '',
-    // isDelete: '',
-    // status: '',
-    // type: '',
-    // password: '',
-    // originalUrl: '',
-    // createTime: '',
-    // updateTime: '',
-  } as Article
-])
-let currentPageData = ref([
-  {
-    // id: '',
-    // userId: '',
-    // categoryId: '',
-    // articleCover: '',
-    // articleTitle: '',
-    // articleAbstract: '',
-    // articleContent: '',
-    // isTop: '',
-    // isFeatured: '',
-    // isDelete: '',
-    // status: '',
-    // type: '',
-    // password: '',
-    // originalUrl: '',
-    // createTime: '',
-    // updateTime: '',
-  } as Article
-])
+let tableData = ref([] as Article[])
+let currentPageData = ref([] as Article[])
 const search = ref('')
 let filterTableData= ref()
 
 
 
+// 分页方法
 const handlePagination = function (val:any) {
   // 根据当前页码和每页显示的数据条数，计算出当前页的数据范围
   let start = (val - 1) * paginationProps.pageSize
   let end = val * paginationProps.pageSize
-  // 根据数据范围，从数据源中截取出当前页的数据
-  currentPageData.value = data.value.slice(start, end)
-  let currentPageDataJSON = JSON.parse(JSON.stringify(data.value.slice(start, end)) ) 
-  //筛选
+  currentPageData.value = tableData.value.slice(start, end)
   filterTableData = computed(() =>
-  currentPageData.value.filter(
-      (data:any) =>
+    currentPageData.value.filter(
+      (data) =>
         !search.value ||
-        data.title.toLowerCase().includes(search.value.toLowerCase())
+        data.articleTitle.toLowerCase().includes(search.value.toLowerCase())
     )
   )
-};
+}
 
 const a = () => {
   getAllArticle().then(res=>{
-      data.value = Object.values(res.data)
-      console.log(data.value)
-      paginationProps.total = data.value.length
+    tableData.value = Object.values(res.data)
+      console.log(tableData.value)
+      paginationProps.total = tableData.value.length
       // console.log(paginationProps.total)
 
       // 调用分页组件的事件处理函数，显示第一页的数据

@@ -32,3 +32,15 @@ export const delCatagory = function(id:number, categoryName:string) {
         }
     })
 }
+
+// 新增catagoryName字段
+export const addCatagory = function(id:number, categoryName:string) {
+    return request({
+        url: '/article/addCategory',
+        method: 'post',
+        data: {
+            categoryName: categoryName,
+            id: id
+        }
+    })
+}

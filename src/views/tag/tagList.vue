@@ -1,12 +1,14 @@
 <template>
+  <el-button size="small" type="danger" plain width="250" @click="dialogFormVisible1 = true">添加行</el-button>&ensp;
+  <el-input v-model="search" style="width: 30%" size="small" placeholder="Type to search" />
   <el-table v-if="tableData.length > 0" :data="filterTableData" style="width: 100%">
+    <el-table-column label="Create time" prop="createTime" width="200"/>
     <el-table-column label="id" prop="id" width="200"/>
-    <el-table-column label="Tag name" prop="tagName" width="250"/>
-    <el-table-column label="Create time" prop="createTime" width="250"/>
+    <el-table-column label="Tag name" prop="tagName" width="200"/>
     <el-table-column label="Update time" prop="updateTime" width="250"/>
     <el-table-column align="right">
       <template #header>
-        <el-input v-model="search" style="width: 40%" size="small" placeholder="Type to search" />
+
       </template>
       <template #default="scope">
         <!-- scope 它是一个对象，包含了当前行的数据和索引等信息 -->
@@ -16,7 +18,7 @@
     </el-table-column>
   </el-table>
 
-<!-- 弹框：传入原本的元素并且可以更改 -->
+<!-- 更新弹框 -->
   <el-dialog v-model="dialogFormVisible" title="更改分类信息">
       <el-form :model="tagName.value">
         <el-form-item label="分类名称" :label-width="formLabelWidth">
@@ -26,7 +28,24 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogFormVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="udpCategory()">
+          <el-button type="primary" @click="upd()">
+            Confirm
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+  <!-- 新增弹框 -->
+  <el-dialog v-model="dialogFormVisible1" title="新增分类信息">
+      <el-form :model="newTagName.value">
+        <el-form-item label="分类名称" :label-width="formLabelWidth">
+          <el-input v-model="newTagName" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="dialogFormVisible1 = false">Cancel</el-button>
+          <el-button type="primary" @click="add()">
             Confirm
           </el-button>
         </span>
@@ -41,7 +60,7 @@
         @current-change="handlePagination"
         v-model:current-page="paginationProps.currentPage"
         layout="prev, pager, next"
-        :total= data.length >
+        :total= tableData.length >
       </el-pagination>
     </div>
   </div>
@@ -49,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { delTag, updTag, tagList } from '@/apis/tag'
+import { delTag, updTag, tagList, addTag } from '@/apis/tag'
 import { useRouter } from "vue-router"
 import { ref, reactive, computed, } from "vue"
 
@@ -61,8 +80,7 @@ interface Tag {
 }
 const formLabelWidth = '140px'
 let dialogFormVisible = ref(false)
-
-let data = reactive([] as Tag[])
+let dialogFormVisible1 = ref(false)
 const search = ref('')
 
 let paginationProps = {
@@ -73,10 +91,11 @@ let paginationProps = {
   // 数据总条数
   total: 0,
 };
-let filterTableData = ref([] as Tag[]) 
-let tableData = ref([] as Tag[])
-let currentPageData = ref([] as Tag[])
-
+let filterTableData = ref([] as Tag[]) // 最后数据
+let tableData = ref([] as Tag[])  // 原始数据
+let currentPageData = ref([] as Tag[])  // 分页数据
+let tagName = ref() // categoryName是作为弹框和列表的响应式同步使用
+let id = ref()
 
 // 分页方法
 const handlePagination = function (val:any) {
@@ -106,22 +125,47 @@ allList()
 
 const router = useRouter()
 
-// 编辑
-let tagName = ref() // categoryName是作为弹框和列表的响应式同步使用
-let id = ref()
+// 打开编辑框
 const handleEdit = (index: number, row: any) => {
   console.log(row)
-  dialogFormVisible.value = true  //展开编辑弹框
+  dialogFormVisible.value = true  
   tagName.value = row.tagName
   id = ref(row.id)
 }
 
+// 打开新增框
+let newTagName = ref('')  // 一开始没有值为空会报错所以预先放入''占位符
+const handleAdd = (index: number, row: any) => {
+  console.log(row)
+  dialogFormVisible1.value = true  
+  tagName.value = row.tagName
+  id = ref(row.id)
+}
+
+// 添加
+const add = () => {
+  if(localStorage.getItem('status')=='admin') {
+    // 数据库id
+    let id = filterTableData.value[filterTableData.value.length - 1].id + 1
+    console.log(id)
+
+    addTag(newTagName.value,id).then(res=>{
+      // 添加新的一行
+      console.log(res.data)
+      tableData.value.push(res.data)
+      console.log(filterTableData.value)
+    })
+  } else {
+    console.log('权限不足，请联系管理员')
+  }
+}
+
 // 更新
-const udpCategory = () => {
+const upd = () => {
   if(localStorage.getItem('status')=='admin') {
     // 更新方法（传入categoryName
     updTag().then(res=>{
-      console.log(res)
+      // console.log(res)
       // 更新列表（修改响应式数组tagData中的值
       filterTableData.value[id.value - 1].tagName = tagName.value
     })

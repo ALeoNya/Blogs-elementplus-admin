@@ -46,17 +46,17 @@ const menuList = [
         component: layout,
         redirect: '/authorityManage/userList',
         children:  [
-            {   
-                name: '接口管理',
-                meta:{ icon: 'Location',title: 'Api Manage'},  
-                path: '/authority/apiList',
-                component: () => import('../views/resource/apiManage.vue')
-            },
             {
                 name: '角色管理',
                 meta:{ icon: 'Location',title: 'Role Manage'},  
                 path: '/authority/roleList',
                 component: () => import('../views/test/test.vue')
+            },
+            {   
+                name: '接口管理',
+                meta:{ icon: 'Location',title: 'Api Manage'},  
+                path: '/authority/apiList',
+                component: () => import('../views/resource/resourceList.vue')
             },
         ]
     },
@@ -71,7 +71,7 @@ const menuList = [
                 name: '用户列表',
                 meta:{ icon: 'Location',title: 'User List'},  
                 path: '/userList',
-                component: () => import('../views/test/test.vue')
+                component: () => import('../views/test/test3.vue')
             },
         ]
     },

@@ -40,6 +40,11 @@ let routes1 = [
     path: '/login',
     component: () => import('../views/login.vue')
   },
+  {
+    name: 'test4',
+    path: '/test4',
+    component: () => import('../views/test/test4.vue')
+  }
 ]
 
 const routes = menuList.concat(routes1)  // 两个路由文件拼接
