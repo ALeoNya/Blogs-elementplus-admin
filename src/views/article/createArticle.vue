@@ -4,16 +4,7 @@
     import { insert,uploadFile } from '@/apis/article'
     import router from '@/router';
     import type { Article } from '@/pojo/article'
-
-
-
-    // TODO 获取当前用户id : 解析token中的id
-    // export interface Article {
-    //     userId: number,
-    //     articleTitle: string,
-    //     articleAbstract: string,
-    //     articleContent: string,
-    // } 
+    
     let timestamp = new Date().getTime()
     //使用 as 关键字将接口转化为对象类型 
     let article = {
@@ -84,6 +75,7 @@
       },
     };
 
+    // 使用minio上传图片
     const md = ref();
     const imgAdd = async (pos:any, file:any) => {
         const formData = new FormData();

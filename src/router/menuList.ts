@@ -50,7 +50,7 @@ const menuList = [
                 name: '角色管理',
                 meta:{ icon: 'Location',title: 'Role Manage'},  
                 path: '/authority/roleList',
-                component: () => import('../views/test/test.vue')
+                component: () => import('../views/role/roleList.vue')
             },
             {   
                 name: '接口管理',
@@ -86,7 +86,7 @@ const menuList = [
                 name: '好友列表',
                 meta:{ icon: 'Location',title: 'Friend List'},  
                 path: '/friendList',
-                component: () => import('../views/test/test.vue')
+                component: () => import('../views/role/test.vue')
             },
         ]
     },

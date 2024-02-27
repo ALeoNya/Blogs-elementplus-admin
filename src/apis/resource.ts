@@ -8,6 +8,13 @@ export const allResource = function() {
     })
 }
 
+export const allResourceByTree = function() {
+    return request({
+        url: '/resource/treeResource',
+        method: 'post'
+    })
+}
+
 export const updResource = function(resource:Resource) {
     console.log(resource.id)
     return request({
