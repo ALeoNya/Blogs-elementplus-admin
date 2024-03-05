@@ -1,25 +1,55 @@
 <template>
-  <!--  -->
-  <div class="hearder">
+  <!-- <div class="hearder">
     <el-button size="small" type="danger" plain width="250" @click="dialogFormVisible1 = true">添加行</el-button>&ensp;
     <el-input v-model="search" style="width: 30%" size="small" placeholder="Type to search" />
+  </div> -->
+
+<div class="all">
+  <div class="page-header">
+    <div class="title">
+      <div class="title-block" style="font-size: large;"><span class="aaa">类别管理</span></div>
+    </div>
+    <div class="button">
+      <div style="font-weight:lighter;">功能</div>
+      <el-button style="height: 35px;" size="big" type="danger" plain width="250" @click="openAddModel()"> + 添加模块</el-button>
+    </div>
+    <div class="input">
+      <div class="" style="font-weight:lighter;">搜索</div>
+      <el-input v-model="search" style="width: 30%;height: 35px;" size="small" placeholder="Type to search"/>
+    </div>
   </div>
-
-  <el-table v-if="tableData.length > 0" :data="filterTableData" style="width: 100%">
-    <el-table-column label="id" prop="id" width="50"/>
-    <el-table-column label="Category name" prop="categoryName" width="250"/>
-    <el-table-column label="Create time" prop="createTime" width="250"/>
-    <el-table-column label="Update time" prop="updateTime" width="250"/>
-    <el-table-column align="right">
-      <template #default="scope">
-        <!-- scope 它是一个对象，包含了当前行的数据和索引等信息 -->
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-        <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
-      </template>
-    </el-table-column>
-  </el-table>
-
-<!-- 弹框：传入原本的元素并且可以更改 -->
+<!-- table list -->
+  <div class="page-body">
+      <div class="title-block" style="font-size: large;">类别列表</div>
+    <el-table v-if="tableData.length > 0" :data="filterTableData" style="width: 100%">
+      <el-table-column label="id" prop="id" width="50"/>
+      <el-table-column label="Category name" prop="categoryName" width="250"/>
+      <el-table-column label="Create time" prop="createTime" width="250"/>
+      <el-table-column label="Update time" prop="updateTime" width="250"/>
+      <el-table-column align="right">
+        <template #default="scope">
+          <!-- scope 它是一个对象，包含了当前行的数据和索引等信息 -->
+          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页器 -->
+    <div class="example-pagination-block">
+      <div class="pagination">
+        <el-pagination
+          @size-change="handlePagination"
+          @current-change="handlePagination"
+          v-model:current-page="paginationProps.currentPage"
+          layout="prev, pager, next"
+          :total= data.length >
+        </el-pagination>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <!-- Edit弹框：传入原本的元素并且可以更改 -->
   <el-dialog v-model="dialogFormVisible" title="更改分类信息">
       <el-form :model="categoryName.value">
         <el-form-item label="分类名称" :label-width="formLabelWidth">
@@ -35,37 +65,22 @@
         </span>
       </template>
     </el-dialog>
-
-      <!-- 新增弹框 -->
+  <!-- Add弹框 -->
   <el-dialog v-model="dialogFormVisible1" title="新增分类信息">
-      <el-form :model="categoryName.value">
-        <el-form-item label="分类名称" :label-width="formLabelWidth">
-          <el-input v-model="categoryName" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogFormVisible1 = false">Cancel</el-button>
-          <el-button type="primary" @click="add()">
-            Confirm
-          </el-button>
-        </span>
-      </template>
-    </el-dialog>
-
-  <!-- 分页器 -->
-  <div class="example-pagination-block">
-    <div class="pagination">
-      <el-pagination
-        @size-change="handlePagination"
-        @current-change="handlePagination"
-        v-model:current-page="paginationProps.currentPage"
-        layout="prev, pager, next"
-        :total= data.length >
-      </el-pagination>
-    </div>
-  </div>
-
+    <el-form :model="categoryName.value">
+      <el-form-item label="分类名称" :label-width="formLabelWidth">
+        <el-input v-model="categoryName" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible1 = false">Cancel</el-button>
+        <el-button type="primary" @click="add()">
+          Confirm
+        </el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script lang="ts" setup>
@@ -177,6 +192,7 @@ const handleDelete = (index: number, row: Category) => {
 }
 </script>
 <style scoped>
+@import '/src/assets/css/list.css';
 .example-pagination-block + .example-pagination-block {
   margin-top: 10px;
 }

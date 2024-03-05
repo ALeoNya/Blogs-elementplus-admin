@@ -2,7 +2,7 @@
   <div class="all">
   <div class="page-header">
     <div class="title">
-      <div class="title-block" style="font-size: large;">资源管理</div>
+      <div class="title-block" style="font-size: large;"><span class="aaa">资源管理</span></div>
     </div>
     <div class="button">
       <div style="font-weight:lighter;">功能</div>

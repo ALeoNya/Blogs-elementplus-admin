@@ -1,61 +1,67 @@
 <template>
-  <el-table :data="filterTableData" style="width: 100%">
-    <el-table-column type="expand">
-      <template #default="props">
-        <div m="4">
-          <p m="t-0 b-2">文章标题: {{ props.row.articleTitle }}</p>
-          <p m="t-0 b-2">文章描述: {{ props.row.articleAbstract }}</p>
-          <p m="t-0 b-2">创建时间: {{ props.row.createTime }}</p>
-          <p m="t-0 b-2">更新时间: {{ props.row.updateTime }}</p>
-          <!-- <h3>Family</h3> -->
-          <!-- 这里填入category和tag信息 -->
-          <!-- <el-table :data="props.row.family" :border="childBorder">
-            <el-table-column label="Name" prop="name" />
-            <el-table-column label="State" prop="state" />
-            <el-table-column label="City" prop="city" />
-            <el-table-column label="Address" prop="address" />
-            <el-table-column label="Zip" prop="zip" />
-          </el-table> -->
-        </div>
-      </template>
-    </el-table-column>
 
-
-    <!-- <el-table-column label="id" prop="id" width="50"/> -->
-    <el-table-column label="Article title" prop="articleTitle" width="200"/>
-    <el-table-column label="Article abstract" prop="articleAbstract" width="200"/>
-    <el-table-column label="Create time" prop="createTime" width="200"/>
-    <el-table-column label="Update time" prop="updateTime" width="200"/>
-    <el-table-column align="right">
-      <template #header>
-        <el-input v-model="search" style="width: 60%" size="small" placeholder="Type to search" />
-      </template>
-      <template #default="scope">
-        <!-- scope 它是一个对象，包含了当前行的数据和索引等信息 -->
-        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>  
-        <el-button
-          size="small"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)"
-          >Delete</el-button
-        >
-      </template>
-    </el-table-column>
-  </el-table>
-
-  <!-- 分页器 -->
-  <div class="example-pagination-block">
-    <div class="pagination">
-      <el-pagination
-        @size-change="handlePagination"
-        @current-change="handlePagination"
-        v-model:current-page="paginationProps.currentPage"
-        layout="prev, pager, next"
-        :total= tableData.length >
-      </el-pagination>
+<div class="all">
+  <div class="page-header">
+    <div class="title">
+      <div class="title-block" style="font-size: large;"><span class="aaa">文章管理</span></div>
+    </div>
+    <div class="button">
+      <div style="font-weight:lighter;">功能</div>
+      <el-button style="height: 35px;" size="big" type="danger" plain width="250" @click="openAddModel()"> + 添加模块</el-button>
+    </div>
+    <div class="input">
+      <div class="" style="font-weight:lighter;">搜索</div>
+      <el-input v-model="search" style="width: 30%;height: 35px;" size="small" placeholder="Type to search"/>
     </div>
   </div>
-
+  <!-- Article Table -->
+  <div class="page-body">
+    <div class="title-block" style="font-size: large;">文章列表</div>
+    <el-table :data="filterTableData" style="width: 100%">
+      <el-table-column type="expand">
+        <template #default="props">
+          <div m="4">
+            <p m="t-0 b-2">文章标题: {{ props.row.articleTitle }}</p>
+            <p m="t-0 b-2">文章描述: {{ props.row.articleAbstract }}</p>
+            <p m="t-0 b-2">创建时间: {{ props.row.createTime }}</p>
+            <p m="t-0 b-2">更新时间: {{ props.row.updateTime }}</p>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="Article title" prop="articleTitle" width="200"/>
+      <el-table-column label="Article abstract" prop="articleAbstract" width="200"/>
+      <el-table-column label="Create time" prop="createTime" width="200"/>
+      <el-table-column label="Update time" prop="updateTime" width="200"/>
+      <el-table-column align="right">
+        <!-- <template #header>
+          <el-input v-model="search" style="width: 60%" size="small" placeholder="Type to search" />
+        </template> -->
+        <template #default="scope">
+          <!-- scope 它是一个对象，包含了当前行的数据和索引等信息 -->
+          <el-button size="small" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>  
+          <el-button
+            size="small"
+            type="danger"
+            @click="handleDelete(scope.$index, scope.row)"
+            >Delete</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页器 -->
+    <div class="example-pagination-block">
+      <div class="pagination">
+        <el-pagination
+          @size-change="handlePagination"
+          @current-change="handlePagination"
+          v-model:current-page="paginationProps.currentPage"
+          layout="prev, pager, next"
+          :total= tableData.length >
+        </el-pagination>
+      </div>
+    </div>
+  </div>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -131,6 +137,7 @@ const handleDelete = (index: number, row: Article) => {
 }
 </script>
 <style scoped>
+@import '/src/assets/css/list.css';
 .example-pagination-block + .example-pagination-block {
   margin-top: 10px;
 }
@@ -143,5 +150,6 @@ const handleDelete = (index: number, row: Article) => {
   /* align-items: center; */
   margin-top: 20px;
 }
+
 </style>
 

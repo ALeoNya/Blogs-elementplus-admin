@@ -1,0 +1,63 @@
+.example-pagination-block + .example-pagination-block {
+    margin-top: 10px;
+  }
+  .example-pagination-block .example-demonstration {
+    margin-bottom: 16px;
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .all {
+    /* height: 100%;
+    width: 100%; */
+    /* background-color: whitesmoke; */
+  }
+
+  .page-header {
+    background-color: white;
+    box-shadow:
+      1.5px 1px 0.5px rgba(0, 0, 0, 0.035),
+      4.1px 2.6px 1.4px rgba(0, 0, 0, 0.05),
+      9.9px 6.3px 3.3px rgba(0, 0, 0, 0.065),
+      33px 21px 11px rgba(0, 0, 0, 0.1)
+    ;
+    margin-bottom: 30px;
+    padding: 10px;
+  }
+
+  .title {
+    margin:0px;
+  }
+  .title-block{
+    width: 15%;
+    border-left: 6px solid #8A7AE8;
+    background: rgb(237, 242, 247);
+    padding: 14px;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+  
+  .button {
+    /* display: inline; */
+    margin:10px;
+  }
+  
+  .input {
+    /* display: inline; */
+    margin: 10px;
+    margin-bottom: 10px;
+  }
+  
+  .page-body {
+    height: auto;
+    background-color: white;
+    padding: 10px;
+    margin-top: 20px;
+    box-shadow:
+      6.7px 6.7px 11px rgba(0, 0, 0, 0.061),
+      22.3px 22.3px 36.9px rgba(0, 0, 0, 0.089),
+      100px 100px 165px rgba(0, 0, 0, 0.15);
+  }
